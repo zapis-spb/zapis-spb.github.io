@@ -84,6 +84,9 @@ h1{margin:4px 0 6px;font-size:30px;line-height:1.1;font-weight:800;letter-spacin
 .svc .row{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:13px;color:var(--dim)}
 .svc .pr{color:var(--text);font-weight:700;font-size:15px}
 .add{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);display:grid;place-items:center;transition:.15s}
+.svc.call .add{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.svc.call .add svg{width:18px;height:18px}
+.svc .row .bycall{color:var(--accent);font-weight:600}
 .add svg{width:18px;height:18px}
 .svc.sel .add{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .note{color:var(--dim);font-size:12px;padding:8px 16px 0}
@@ -203,6 +206,8 @@ footer{padding:28px 16px calc(120px + var(--safe-b));color:var(--dim);font-size:
 .pedit{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .pedit .n{flex:1;font-size:14px}
 .pedit input{width:96px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:right;font-weight:700}
+.pedit .pcall{flex:0 0 auto;height:36px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--muted);font-size:12px;font-weight:700}
+.pedit .pcall.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
 .owner-note{font-size:12px;color:var(--dim);margin:10px 0 0}
 @media (min-width:600px){.hero{height:360px;border-radius:0 0 22px 22px}}
 </style>
@@ -242,12 +247,15 @@ const I = {
 const LIVE = /*__LIVE__*/false;
 const API = '/api/' + D.slug;
 const overrides = LIVE ? {} : (()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch(e){return {}}})();
+// демо: какие услуги владелец перевёл в «только по звонку» (в рабочей версии это хранится на сервере)
+const CKEY = 'cl_' + D.slug;
+const callOv = LIVE ? {} : (()=>{try{return JSON.parse(localStorage.getItem(CKEY)||'{}')}catch(e){return {}}})();
 let SV = [];
 function buildSV(){
   SV = [];
   D.categories.forEach((c,ci)=>c.services.forEach((s,si)=>{
     const id = s.id || ci+'-'+si;
-    SV.push({...s, id, cat:c.name, price: overrides[id] ?? s.price, dur: s.dur || guessDur(s.name, s.price)});
+    SV.push({...s, id, cat:c.name, price: overrides[id] ?? s.price, call: callOv[id] ?? !!s.call, dur: s.dur || guessDur(s.name, s.price)});
   }));
 }
 buildSV();
@@ -371,7 +379,15 @@ function catHtml(){
   return D.categories.map((c,ci)=>{ const list = SV.filter(s=>s.cat===c.name);
     return `<section class="cat-sec" data-c="${ci}">
       <h3 class="cat-h">${esc(c.name)}<span class="n">${list.length}</span></h3>
-      ${list.map(s=>`
+      ${list.map(s=> s.call ? `
+      <div class="svc call" data-id="${s.id}">
+        <div class="body">
+          <div class="nm">${esc(s.name)}</div>
+          ${s.desc?`<div class="ds">${esc(s.desc)}</div>`:''}
+          <div class="row"><span class="pr">${s.from?'от ':''}${rub(s.price)}</span><span class="bycall">Запись по телефону</span></div>
+        </div>
+        ${D.phones[0]?`<a class="add" href="tel:${esc(D.phones[0].value)}" aria-label="Позвонить">${I.phone}</a>`:''}
+      </div>` : `
       <div class="svc ${st.sel.includes(s.id)?'sel':''}" data-id="${s.id}">
         <div class="body">
           <div class="nm">${esc(s.name)}</div>
@@ -383,7 +399,8 @@ function catHtml(){
     </section>`; }).join('');
 }
 function bindCat(){
-  document.querySelectorAll('.svc').forEach(el=>el.addEventListener('click',()=>{
+  document.querySelectorAll('.svc').forEach(el=>el.addEventListener('click',e=>{
+    if (el.classList.contains('call')){ if (!e.target.closest('a')) toast('На эту услугу записываем по телефону: нажмите на трубку'); return; }
     const id = el.dataset.id; const i = st.sel.indexOf(id);
     if (i>=0) st.sel.splice(i,1); else st.sel.push(id);
     el.classList.toggle('sel'); el.querySelector('.add').innerHTML = st.sel.includes(id)?I.check:I.plus;
@@ -511,7 +528,7 @@ async function refreshConfig(force){
   const cfg = r.data;
   if (!force && pickCfg(cfg) === pickCfg(D)) return true;
   ['categories','hours','boxes','phones','confirm','daysOff','_version'].forEach(k=>{ if (k in cfg) D[k] = cfg[k]; });
-  buildSV(); st.sel = st.sel.filter(id=>SV.some(s=>s.id===id));
+  buildSV(); st.sel = st.sel.filter(id=>SV.some(s=>s.id===id && !s.call));
   if (!sheetOpen() && location.hash!=='#owner') renderMain();
   return true;
 }
@@ -538,7 +555,7 @@ async function loadAvail(force){
     avail.data = {...r.data, _key:key}; avail.status = 'ok'; avail.at = Date.now(); ensureDate();
   } else {
     avail.status = 'error'; avail.errMsg = r.status===423 ? r.data.message : '';
-    if (r.data.error==='service_changed'){ toast(r.data.message); await refreshConfig(true); closeSheet(); return; }
+    if (r.data.error==='service_changed' || r.data.error==='call_only'){ toast(r.data.message); await refreshConfig(true); closeSheet(); return; }
   }
   if (sheetOpen() && st.step===1) renderSheet();
 }
@@ -623,7 +640,7 @@ async function submitBooking(){
   }
   const e = r.data.error;
   if (e==='slot_taken' || e==='day_closed'){ st.idem = null; st.time = null; st.step = 1; toast(r.data.message || 'Это время уже заняли'); renderSheet(); loadAvail(true); return; }
-  if (e==='service_changed'){ st.idem = null; toast(r.data.message); await refreshConfig(true); closeSheet(); return; }
+  if (e==='service_changed' || e==='call_only'){ st.idem = null; toast(r.data.message); await refreshConfig(true); closeSheet(); return; }
   st.sendErr = r.status===0 ? 'Нет связи с сервером. Проверьте интернет и нажмите ещё раз — запись не задвоится.' : (r.data.message || 'Не получилось записаться.');
   renderSheet();
 }
@@ -784,12 +801,13 @@ function renderOwner(){
       ${mine.length?mine.slice().reverse().map(b=>`<div class="bk"><div class="t">${b.request?'Заявка · ':''}${dateHuman(b.date)}${b.start!=null?', '+hm(b.start):''}</div><div class="s">${esc(b.name)} · ${esc(b.phone)}${b.car?' · '+esc(b.car):''}</div><div class="s">${b.services.map(esc).join(', ')} · ${rub(b.total)}</div>${b.comment?`<div class="s">«${esc(b.comment)}»</div>`:''}</div>`).join(''):`<div class="empty">Пока пусто. Запишитесь на главной странице — запись появится здесь.</div>`}
       <div class="owner-note">В рабочей версии каждая запись дублируется вам в Telegram сразу после оформления.</div>`:''}
     ${ownerTab==='price'?`
-      ${SV.map(s=>`<div class="pedit"><div class="n">${esc(s.name)}</div><input inputmode="numeric" data-id="${s.id}" value="${s.price}"></div>`).join('')}
-      <div class="owner-note">Цены меняются сразу на странице записи. Без звонков разработчику.</div>`:''}
+      ${SV.map(s=>`<div class="pedit"><div class="n">${esc(s.name)}</div><button class="pcall ${s.call?'on':''}" data-id="${s.id}">${s.call?'По звонку':'Онлайн'}</button><input inputmode="numeric" data-id="${s.id}" value="${s.price}"></div>`).join('')}
+      <div class="owner-note">Цены меняются сразу на странице записи, без звонков разработчику. «По звонку»: клиент видит услугу и цену, но вместо записи ему предлагают позвонить. Ещё в кабинете есть переключатель «подтверждать записи вручную».</div>`:''}
   </div>`;
   document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ownerTab=b.dataset.t; renderOwner();});
   document.querySelectorAll('.owner .day').forEach(b=>b.onclick=()=>{ownerDate=b.dataset.d; renderOwner();});
   document.querySelectorAll('.owner .days').forEach(d=>dragScroll(d));
+  document.querySelectorAll('.pedit .pcall').forEach(b=>b.onclick=()=>{ const s=svc(b.dataset.id); s.call=!s.call; callOv[s.id]=s.call; try{localStorage.setItem(CKEY,JSON.stringify(callOv))}catch(e){} st.sel=st.sel.filter(id=>id!==s.id); toast(s.call?'Теперь эта услуга только по звонку':'Снова можно записаться онлайн'); renderOwner(); });
   document.querySelectorAll('.pedit input').forEach(inp=>inp.onchange=()=>{const v=parseInt(inp.value.replace(/\D/g,''))||0; overrides[inp.dataset.id]=v; try{localStorage.setItem(PKEY,JSON.stringify(overrides))}catch(e){} svc(inp.dataset.id).price=v; toast('Цена сохранена');});
   window.scrollTo(0,0);
 }
