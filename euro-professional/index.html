@@ -230,6 +230,12 @@ body{background:
 .hero::after{background:linear-gradient(180deg,rgba(14,16,20,.28) 0%,rgba(14,16,20,0) 28%,rgba(14,16,20,.5) 58%,rgba(14,16,20,.97) 100%)}
 .kind{display:inline-block;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 30%,rgba(10,12,16,.55));color:#fff;letter-spacing:.06em;font-size:11px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 h1,.meta{text-shadow:0 2px 14px rgba(0,0,0,.55)}
+/* логотип мойки вместо названия, если он есть */
+.title-row{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+.title-row h1{margin:0}
+.badge-logo{flex:0 0 auto;width:58px;height:58px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid rgba(255,255,255,.9);box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.logo-h{margin:8px 0 8px}
+.logo-h img{display:block;height:58px;max-width:86%;object-fit:contain;object-position:left center;filter:drop-shadow(0 2px 14px rgba(0,0,0,.75))}
 /* карточки: мягкий блик сверху и тень */
 .svc,.info-card,.summary,.install,.qa,.day,.time{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 60%),var(--card);border-color:rgba(255,255,255,.075)}
 .svc,.info-card,.install{border-radius:18px;box-shadow:0 10px 28px -20px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04)}
@@ -712,7 +718,9 @@ function renderMain(){
     ${(D.photos||[]).length>1?`<button class="hero-nav l" id="prevPh" aria-label="Предыдущее фото">${I.back}</button><button class="hero-nav r" id="nextPh" aria-label="Следующее фото" style="transform:translateY(-50%) scaleX(-1)">${I.back}</button>`:''}
     <div class="hero-info">
       <div class="kind">${esc(D.kind)}</div>
-      <h1>${esc(D.name)}</h1>
+      ${D.logo ? `<h1 class="logo-h"><img src="${esc(D.logo)}" alt="${esc(D.name)}"></h1>`
+        : D.logoBadge ? `<div class="title-row"><img class="badge-logo" src="${esc(D.logoBadge)}" alt=""><h1>${esc(D.name)}</h1></div>`
+        : `<h1>${esc(D.name)}</h1>`}
       <div class="meta">
         ${D.rating?`<span><span class="star">★</span> ${Number(D.rating).toFixed(1).replace('.',',')} · ${D.reviews} ${plural(D.reviews,'оценка','оценки','оценок')}</span>`:''}
         <span>${esc(D.district||'')}</span>
