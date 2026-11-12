@@ -20,6 +20,8 @@
 <!-- шрифт грузится в фоне: если Google в России тормозит, страница всё равно сразу открывается системным шрифтом -->
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
+/* Samsung Internet перекрашивает сайты в тёмном режиме, если не видит у них своей тёмной темы — показываем, что она есть */
+@media (prefers-color-scheme: dark){:root{color-scheme:dark}}
 :root{
   color-scheme:dark;
   --bg:#0E1014; --bg2:#15181E; --card:#1A1E25; --line:#262B34; --text:#F2F4F7; --muted:#9AA3B2; --dim:#6B7380;
