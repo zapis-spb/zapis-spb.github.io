@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark">
+<title>Проверка экрана</title>
+<style>
+body{margin:0;background:#0E1014;color:#F2F4F7;font:18px/1.5 system-ui,sans-serif;padding:16px}
+h1{font-size:22px;margin:0 0 12px}
+.r{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #262B34}
+.r b{font-weight:700}
+.bar{height:14px;background:#4F8CFF;border-radius:7px;margin:14px 0}
+.small{font-size:13px;color:#9AA3B2;word-break:break-all}
+</style>
+</head>
+<body>
+<h1>Проверка экрана</h1>
+<div class="bar"></div>
+<div id="out"></div>
+<script>
+const v = window.visualViewport;
+const rows = [
+  ['Ширина страницы (innerWidth)', innerWidth],
+  ['Ширина документа (clientWidth)', document.documentElement.clientWidth],
+  ['Ширина экрана (screen.width)', screen.width],
+  ['Плотность (devicePixelRatio)', devicePixelRatio],
+  ['Масштаб (visualViewport.scale)', v ? v.scale.toFixed(2) : '—'],
+  ['Видимая ширина (visualViewport.width)', v ? Math.round(v.width) : '—'],
+  ['Узкий экран (до 600)', matchMedia('(max-width:599px)').matches ? 'да' : 'нет'],
+  ['Сенсорный экран', matchMedia('(pointer:coarse)').matches ? 'да' : 'нет'],
+  ['Тёмная тема в системе', matchMedia('(prefers-color-scheme: dark)').matches ? 'да' : 'нет'],
+];
+document.getElementById('out').innerHTML = rows.map(([k, x]) => `<div class="r"><span>${k}</span><b>${x}</b></div>`).join('')
+  + `<p class="small">${navigator.userAgent}</p>`;
+</script>
+</body>
+</html>
