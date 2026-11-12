@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Кабинет · М-Авто</title>
+<meta name="theme-color" content="#0E1014">
+<link rel="manifest" id="mf" href="manifest.webmanifest">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Кабинет">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --bg:#0E1014; --bg2:#15181E; --card:#1A1E25; --line:#262B34; --text:#F2F4F7; --muted:#9AA3B2; --dim:#6B7380;
+  --accent:#F76B15; --accent-ink:#fff; --ok:#3DD68C; --warn:#F5B84B; --danger:#FF6B6B;
+  --r:16px; --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px); --row:38px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{min-height:100dvh}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:720px;margin:0 auto;padding-bottom:calc(84px + var(--safe-b))}
+.demo-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 16px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--accent) 14%,#14171C);border-bottom:1px solid color-mix(in srgb,var(--accent) 25%,var(--line))}
+.demo-bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demo-bar a{flex:0 0 auto;color:var(--text);font-weight:700}
+.top{position:sticky;top:0;z-index:15;background:rgba(14,16,20,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:calc(10px + var(--safe-t)) 16px 10px;border-bottom:1px solid var(--line)}
+.top h1{margin:0;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.sync{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px;margin-top:2px}
+.sync i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.sync.off i{background:var(--danger)}
+.offline{margin:10px 16px 0;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--danger) 12%,var(--card));border:1px solid color-mix(in srgb,var(--danger) 40%,var(--line));font-size:13px}
+.pad{padding:0 16px}
+.h2{font-size:17px;font-weight:800;margin:20px 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:12px;color:var(--dim)}
+
+/* дни */
+.days{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:12px 16px 4px}
+.days::-webkit-scrollbar{display:none}
+.day{position:relative;flex:0 0 auto;width:56px;padding:8px 0;border-radius:14px;background:var(--card);border:1px solid var(--line);text-align:center}
+.day .w{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.day .d{font-size:18px;font-weight:800;margin-top:1px}
+.day .c{font-size:11px;color:var(--dim);font-weight:700;height:15px}
+.day.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.day.on .w,.day.on .c{color:inherit;opacity:.9}
+.day.off .d{opacity:.4}
+.day .nw{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.kpi .v{font-size:18px;font-weight:800}
+.kpi .k{font-size:12px;color:var(--muted)}
+
+/* сетка дня */
+.grid-wrap{margin:8px 16px 0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
+.grid{display:grid;grid-template-columns:46px repeat(var(--n),minmax(118px,1fr));min-width:100%}
+.gh{position:sticky;top:0;z-index:2;padding:10px 6px;font-size:12px;font-weight:800;color:var(--muted);text-align:center;border-bottom:1px solid var(--line);background:var(--card)}
+.gt{position:relative;border-right:1px solid var(--line)}
+.gt span{position:absolute;left:0;right:6px;text-align:right;font-size:11px;color:var(--dim);transform:translateY(-50%)}
+.col{position:relative;border-right:1px solid var(--line);cursor:copy;
+  background-image:repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--row)*2 - 1px),var(--line) calc(var(--row)*2 - 1px),var(--line) calc(var(--row)*2)),
+                   repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--row) - 1px),rgba(255,255,255,.035) calc(var(--row) - 1px),rgba(255,255,255,.035) var(--row))}
+.col:last-child{border-right:0}
+.col.closed{background-color:rgba(0,0,0,.25)}
+.bk{position:absolute;left:3px;right:3px;border-radius:10px;padding:5px 8px;font-size:12px;line-height:1.3;overflow:hidden;cursor:pointer;
+  background:color-mix(in srgb,var(--accent) 26%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 60%,transparent)}
+.bk b{display:block;font-size:12px;font-weight:800}
+.bk .x{color:#d6dbe3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk.manual{background:#2A303A;border-color:#3A414D}
+.bk.new{background:color-mix(in srgb,var(--warn) 18%,var(--bg2));border-color:var(--warn)}
+.bk.done{opacity:.55}
+.bk.noshow{opacity:.55;border-style:dashed;border-color:var(--danger)}
+.bk.block{background:repeating-linear-gradient(135deg,#1f232b 0 8px,#252a33 8px 16px);border-color:#3A414D;color:var(--muted)}
+.bk .tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:6px;background:var(--warn);color:#1a1300;margin-bottom:2px}
+.now-line{position:absolute;left:46px;right:0;height:2px;background:var(--danger);z-index:3;pointer-events:none}
+.now-line::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--danger)}
+.closed-card{margin:12px 16px;padding:22px;text-align:center;background:var(--card);border:1px dashed var(--line);border-radius:var(--r);color:var(--muted)}
+.hint{margin:8px 16px 0;font-size:12px;color:var(--dim)}
+
+/* карточки и списки */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0 16px 10px}
+.card .t{font-weight:800;font-size:16px}
+.card .s{color:var(--muted);font-size:13px;margin-top:3px}
+.card .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.chip-st{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:8px}
+.st-new{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.st-confirmed{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.st-done{background:#2A303A;color:var(--muted)}
+.st-noshow,.st-cancelled{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+.btn{flex:1;min-width:120px;height:46px;border-radius:13px;background:var(--bg2);border:1px solid var(--line);font-weight:700;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 12px}
+.btn svg{width:18px;height:18px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.okb{background:color-mix(in srgb,var(--ok) 18%,var(--bg2));border-color:color-mix(in srgb,var(--ok) 50%,var(--line))}
+.btn.dan{color:var(--danger)}
+.btn[disabled]{opacity:.45}
+.empty{margin:12px 16px;padding:26px 18px;text-align:center;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:var(--r)}
+
+/* нижнее меню */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(21,24,30,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 6px calc(6px + var(--safe-b));display:flex;justify-content:center}
+.nav .in{display:flex;width:100%;max-width:720px}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;font-weight:700;color:var(--dim);position:relative}
+.nav button svg{width:22px;height:22px}
+.nav button.on{color:var(--text)}
+.nav .bdg{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--danger);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
+.nav .bdg[hidden]{display:none}
+.fab{position:fixed;right:max(16px,calc(50% - 344px));bottom:calc(84px + var(--safe-b));z-index:19;width:58px;height:58px;border-radius:18px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 10px 30px -8px color-mix(in srgb,var(--accent) 80%,transparent)}
+.fab svg{width:26px;height:26px}
+
+/* окно снизу */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet-bg.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:94dvh;display:flex;flex-direction:column;background:var(--bg2);border-radius:22px 22px 0 0;transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-width:720px;margin:0 auto;border-top:1px solid var(--line)}
+.sheet.on{transform:none}
+.sh-head{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+.sh-head h2{font-size:18px;margin:0;flex:1;font-weight:800}
+.icon-btn{width:36px;height:36px;border-radius:12px;background:var(--card);display:grid;place-items:center;border:1px solid var(--line);flex:0 0 36px}
+.icon-btn svg{width:18px;height:18px}
+.sh-body{overflow-y:auto;padding:4px 16px 16px;flex:1}
+.sh-foot{padding:12px 16px calc(12px + var(--safe-b));border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+.rows{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px;margin-bottom:12px}
+.rows .r{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rows .r:last-child{border-bottom:0}
+.rows .r>span:first-child{color:var(--muted);flex:0 0 auto}
+.rows .r>span:last-child{text-align:right}
+.call{display:flex;align-items:center;justify-content:center;gap:10px;height:56px;border-radius:16px;background:var(--ok);color:#06210f;font-weight:800;font-size:17px;margin-bottom:12px}
+.call svg{width:22px;height:22px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 13px;font-size:16px;outline:none}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:4px;margin-bottom:12px;overflow-x:auto}
+.seg button{flex:1;padding:9px 10px;border-radius:10px;font-weight:700;font-size:14px;color:var(--muted);white-space:nowrap}
+.seg button.on{background:var(--text);color:var(--bg)}
+.svc-pick{background:var(--card);border:1px solid var(--line);border-radius:13px;max-height:240px;overflow-y:auto;margin-bottom:12px}
+.svc-pick .cat{font-size:12px;font-weight:800;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;padding:10px 12px 4px}
+.svc-pick label{display:flex;gap:10px;align-items:center;padding:9px 12px;font-size:14px;border-top:1px solid var(--line)}
+.svc-pick label span{flex:1}
+.svc-pick input{width:20px;height:20px;accent-color:var(--accent)}
+.err-box{background:color-mix(in srgb,var(--danger) 12%,var(--card));border:1px solid color-mix(in srgb,var(--danger) 40%,var(--line));border-radius:13px;padding:10px 13px;font-size:14px;margin-bottom:12px}
+.times{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.time{padding:10px 0;border-radius:11px;background:var(--card);border:1px solid var(--line);text-align:center;font-weight:700;font-size:14px}
+.time.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.time[disabled]{opacity:.25;text-decoration:line-through}
+
+/* цены и настройки */
+.cat-h{display:flex;gap:8px;align-items:center;margin:18px 16px 8px}
+.cat-h input{flex:1;background:transparent;border:1px solid transparent;border-radius:10px;padding:6px 8px;font-size:17px;font-weight:800;margin-left:-8px}
+.cat-h input:focus{border-color:var(--line);background:var(--card);outline:none}
+.pe{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 16px 8px}
+.pe.hid{opacity:.55}
+.pe .nm{width:100%;background:transparent;border:1px solid transparent;border-radius:9px;padding:5px 6px;margin-left:-6px;font-weight:700;font-size:15px}
+.pe .nm:focus{border-color:var(--line);background:var(--bg2);outline:none}
+.pe .ln{display:flex;gap:8px;align-items:center;margin-top:6px}
+.pe .ln input,.pe .ln select{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:15px}
+.pe .pr{width:96px;text-align:right;font-weight:800}
+.pe .du{flex:1;min-width:0}
+.pe .tg{flex:0 0 auto;height:38px;padding:0 10px;border-radius:10px;border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--muted)}
+.pe .tg.on{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 50%,var(--line))}
+.pe .del{flex:0 0 38px;height:38px;border-radius:10px;border:1px solid var(--line);color:var(--danger);display:grid;place-items:center}
+.pe .del svg{width:16px;height:16px}
+.pe .mode{width:100%;min-height:36px;margin-top:6px;border-radius:10px;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pe .mode b{color:var(--ok);font-weight:800}
+.pe .mode.phone-only{border-color:color-mix(in srgb,#F5A524 45%,var(--line))}
+.pe .mode.phone-only b{color:#F5A524}
+.pe .mode .chg{color:var(--muted);font-size:12px;font-weight:600;white-space:nowrap}
+.add-row{margin:0 16px 8px;width:calc(100% - 32px);height:44px;border-radius:13px;border:1px dashed var(--line);color:var(--muted);font-weight:700}
+.savebar{position:fixed;left:0;right:0;bottom:calc(66px + var(--safe-b));z-index:18;padding:10px 16px;display:flex;justify-content:center;pointer-events:none}
+.savebar .in{display:flex;gap:8px;width:100%;max-width:688px;pointer-events:auto;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.set{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin:0 16px 12px;padding:14px}
+.set h3{margin:0 0 4px;font-size:16px;font-weight:800}
+.set p{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.sw{position:relative;width:50px;height:30px;flex:0 0 50px;border-radius:15px;background:var(--line);transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:var(--ok)}
+.sw.on::after{left:23px}
+.line{display:flex;align-items:center;gap:10px}
+.line .grow{flex:1}
+.hrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.hrow:last-child{border-bottom:0}
+.hrow .dn{flex:0 0 34px;font-weight:800}
+.hrow select{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:7px 6px;font-size:15px}
+.hrow .cl{color:var(--dim);font-size:14px;flex:1}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:44px;height:44px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);font-size:22px;font-weight:800}
+.stepper b{font-size:22px;min-width:24px;text-align:center}
+.doff{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.doff span{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 11px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);font-size:13px;font-weight:700}
+.doff button{width:22px;height:22px;border-radius:50%;background:var(--line);display:grid;place-items:center}
+.doff button svg{width:12px;height:12px}
+.howto{margin:0;padding-left:20px;font-size:14px}
+.howto li{margin:6px 0}
+.toast{position:fixed;left:50%;top:calc(14px + var(--safe-t));transform:translate(-50%,calc(-100% - 60px));background:var(--card);border:1px solid var(--line);padding:11px 16px;border-radius:13px;z-index:50;font-size:14px;font-weight:600;transition:transform .3s;max-width:92vw;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.toast.on{transform:translate(-50%,0)}
+.toast.newb{border-color:var(--warn)}
+.login{max-width:420px;margin:0 auto;padding:22vh 24px 0;text-align:center}
+.login h1{font-size:24px;margin:0 0 10px}
+.login p{color:var(--muted)}
+.spin{width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast"></div>
+<script>
+// Демо-сервер внутри браузера: отвечает на те же запросы /api/<мойка>/..., что настоящий server/app.py.
+// Встраивается только в демо-сборку (build.py без --live). Данные лежат в localStorage этого браузера,
+// поэтому страница записи и кабинет владельца видят одни и те же записи. Логика повторяет app.py:
+// если меняется сервер — меняем и здесь (проверяет scratchpad/demo_e2e.mjs).
+(() => {
+const SLUG = "m-avto", CFG0 = {"slug": "m-avto", "name": "М-Авто", "kind": "Автомойка и автосервис", "address": "Санкт-Петербург, 16-я линия В.О., 81", "district": "Василеостровский район", "mapsUrl": "https://yandex.ru/maps/org/m_avto/43045824344/", "phones": [{"value": "+79650659900", "label": "Запись"}, {"value": "+79939659900", "label": "Доп. номер"}], "telegram": "https://t.me/+79117068114", "vk": "", "rating": 4.7, "reviews": 257, "hours": {"mon": ["09:00", "21:00"], "tue": ["09:00", "21:00"], "wed": ["09:00", "21:00"], "thu": ["09:00", "21:00"], "fri": ["09:00", "21:00"], "sat": ["09:00", "21:00"], "sun": ["09:00", "21:00"]}, "boxes": 2, "accent": "#F76B15", "photos": ["https://avatars.mds.yandex.net/get-altay/5517178/2a00000180bd73f7b1056357b8243ea2eeba/XXL", "https://avatars.mds.yandex.net/get-altay/218662/2a00000186f5bc0c7cc1ca4fe66e6a9326ee/XXL", "https://avatars.mds.yandex.net/get-altay/7734890/2a000001871aa1b28391b3788b54ca247030/XXL", "https://avatars.mds.yandex.net/get-altay/11004775/2a0000018ce379a068cf93c809c64f56b373/XXL", "https://avatars.mds.yandex.net/get-altay/19300673/2a0000019df7a7ac746b95f8769ee134c51e/XXL", "https://avatars.mds.yandex.net/get-altay/5098810/2a0000018281d5ebdc7b4d7d490028a6b79f/XXL", "https://avatars.mds.yandex.net/get-altay/5102477/2a00000180bd742d935607b80b9160948ce2/XXL", "https://avatars.mds.yandex.net/get-altay/19785895/2a0000019df7a50203b70477bb5105a4ece3/XXL"], "pricesSource": "Яндекс Карты, прайс организации", "categories": [{"name": "Мойка", "services": [{"id": "0-0", "name": "Технологическая мойка (облив водой)", "price": 300, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-1", "name": "Мойка кузова «Стандарт»", "price": 650, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "0-2", "name": "Мойка «Люкс» без багажника", "price": 1300, "from": false, "desc": "1 кат 1300 р, 2 кат 1400 р, 3 кат 1600 р, 4 кат 1800 р", "dur": 90, "hidden": false, "call": false}, {"id": "0-3", "name": "Мойка «Экстра люкс»", "price": 1450, "from": false, "desc": "Мойка кузова + коврики, Пылесос всего салона, Влажна уборка салона + пластика, Чернение резины", "dur": 90, "hidden": false, "call": false}, {"id": "0-4", "name": "Мойка «Премиум»", "price": 2400, "from": false, "desc": "Мойка кузова + коврики, Обезжиривание кузова, Покрытие воском кузова, Уборка салона пылесосом, Влажная уборка…", "dur": 120, "hidden": false, "call": false}, {"id": "0-5", "name": "Мойка радиатора", "price": 500, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "0-6", "name": "Мойка арок", "price": 200, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-7", "name": "Мойка мотоцикла", "price": 600, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "0-8", "name": "Мойка двигателя", "price": 500, "from": true, "desc": "", "dur": 45, "hidden": false, "call": false}, {"id": "0-9", "name": "Мойка ковриков", "price": 100, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-10", "name": "Мойка лобового стекла", "price": 100, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-11", "name": "Удаление металлических вкраплений с кузова", "price": 2000, "from": false, "desc": "", "dur": 45, "hidden": false, "call": false}, {"id": "0-12", "name": "Обработка замков WD-40", "price": 200, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-13", "name": "Обезжиривание кузова", "price": 350, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-14", "name": "Чистка дисков спецхимией", "price": 300, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-15", "name": "Чернение шин", "price": 150, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-16", "name": "Уборка пылесосом багажника", "price": 250, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-17", "name": "Очистка стекла", "price": 150, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-18", "name": "Влажная уборка салона", "price": 200, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "0-19", "name": "Глубокая очистка дисков с кислотой", "price": 250, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-20", "name": "Уборка салона пылесосом", "price": 300, "from": false, "desc": "1 кат 300 р, 2 кат 350 р, 3 кат 400 р, 4 кат 600 р", "dur": 60, "hidden": false, "call": false}, {"id": "0-21", "name": "Турбосушка", "price": 300, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}]}, {"name": "Химчистка", "services": [{"id": "1-0", "name": "Химчистка салона", "price": 7000, "from": true, "desc": "", "dur": 480, "hidden": false, "call": false}, {"id": "1-1", "name": "Химчистка одного ковра", "price": 500, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "1-2", "name": "Химчистка потолка", "price": 2000, "from": true, "desc": "", "dur": 120, "hidden": false, "call": false}, {"id": "1-3", "name": "Химчистка пола", "price": 2000, "from": true, "desc": "", "dur": 120, "hidden": false, "call": false}, {"id": "1-4", "name": "Частичная химчистка салона", "price": 5000, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "1-5", "name": "Полная химчистка авто", "price": 8000, "from": true, "desc": "", "dur": 480, "hidden": false, "call": false}]}, {"name": "Полировка и покрытия", "services": [{"id": "2-0", "name": "Антидождь на 3 стекла", "price": 1600, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "2-1", "name": "Кварцевое покрытие кузова", "price": 3300, "from": false, "desc": "1 КАТ 3300 Р, 2 КАТ 3800 Р, 3 КАТ 4300 Р, 4 КАТ 5000 Р", "dur": 90, "hidden": false, "call": false}, {"id": "2-2", "name": "Полировка авто", "price": 6000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "2-3", "name": "Антидождь на стёкла", "price": 1000, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "2-4", "name": "Полировка фар", "price": 500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "2-5", "name": "Нанесение кварцевого покрытия", "price": 2000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "2-6", "name": "Полная полировка авто", "price": 7000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}]}, {"name": "Ремонт и ТО", "services": [{"id": "3-0", "name": "Замена габаритной лампы", "price": 150, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "3-1", "name": "Замена тормозного диска переднего", "price": 1000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-2", "name": "Замена тормозных колодок (передних)", "price": 1000, "from": false, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-3", "name": "Замена подшипника переднего", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-4", "name": "Замена подшипника заднего", "price": 2000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-5", "name": "Ремонт рулевой рейки", "price": 12000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-6", "name": "Снятие и установка рулевой рейки", "price": 4000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-7", "name": "Замена стоек стабилизатора передних", "price": 850, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-8", "name": "Замена амортизатора переднего", "price": 2500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-9", "name": "Замена заднего амортизатора", "price": 1500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-10", "name": "Замена лампы ближнего света", "price": 250, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "3-11", "name": "Замена гофры глушителя", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-12", "name": "Замена цепи ГРМ", "price": 8000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-13", "name": "Замена лампы дальнего света", "price": 250, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}]}, {"name": "Кузовной ремонт", "services": [{"id": "4-0", "name": "Арматурные работы", "price": 1500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-1", "name": "Сварочные работы", "price": 1500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-2", "name": "Снятие и установка крыла", "price": 1800, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-3", "name": "Снятие и установка капота", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-4", "name": "Снятие и установка двери", "price": 4500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-5", "name": "Ремонт арок автомобиля", "price": 7000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-6", "name": "Антикоррозийная обработка днища (арок) автомобиля", "price": 10000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-7", "name": "Рихтовка одного элемента", "price": 7500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-8", "name": "Ремонт бампера", "price": 2000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-9", "name": "Снятие и установка бампера", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-10", "name": "Покраска одного элемента", "price": 9000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-11", "name": "Полная покраска авто", "price": 80000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-12", "name": "Снятие и установка крышки багажника", "price": 4000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-13", "name": "Замена и ремонт порогов автомобиля", "price": 9500, "from": true, "desc": "В зависимости от автомобиля от 5000р. до 20500р.", "dur": "days", "hidden": false, "call": false}]}], "confirm": false, "daysOff": []}, VER = "9121f18f";
+if (!CFG0) return;
+const STEP = 30, LEAD = 30, HORIZON = 30, AVAIL = 14, MAX_ACTIVE = 3;
+const DOWS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const SKEY = 'zdemo_' + SLUG + '_' + VER;
+
+// ---------- время: как на сервере, по Москве ----------
+function nowMsk() {
+  const t = new Date(Date.now() + 3 * 3600e3);
+  return { date: t.toISOString().slice(0, 10), min: t.getUTCHours() * 60 + t.getUTCMinutes(),
+           iso: t.toISOString().slice(0, 19) + '+03:00' };
+}
+const addDays = (k, n) => { const d = new Date(k + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const dow = k => DOWS[new Date(k + 'T12:00:00Z').getUTCDay()];
+const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+const hm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/, TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+class ApiError { constructor(status, error, message = '') { this.status = status; this.error = error; this.message = message; } }
+const clone = o => JSON.parse(JSON.stringify(o));
+
+// ---------- хранилище ----------
+let MEM = null, STORAGE = true;
+function load() {
+  if (MEM) return MEM;
+  try { const s = localStorage.getItem(SKEY); if (s) MEM = JSON.parse(s); } catch (e) { STORAGE = false; }
+  if (!MEM) { const s = seedState(clone(CFG0), 1); MEM = { cfg: s.cfg, bookings: s.bookings, next: s.next, seedDate: nowMsk().date }; save(); }
+  // демо открыли в другой день: обновляем показательное расписание, записи и настройки посетителя сохраняем
+  if (MEM.seedDate !== nowMsk().date) {
+    const mine = MEM.bookings.filter(b => b.u), s = seedState(MEM.cfg, MEM.next);
+    MEM.bookings = s.bookings.concat(mine); MEM.next = s.next; MEM.seedDate = nowMsk().date; save();
+  }
+  return MEM;
+}
+function save() { try { localStorage.setItem(SKEY, JSON.stringify(MEM)); } catch (e) { STORAGE = false; } }
+// другая вкладка (кабинет или страница записи) могла поменять данные
+window.addEventListener('storage', e => { if (e.key === SKEY) MEM = null; });
+function fresh() { if (STORAGE) MEM = null; return load(); }
+
+// ---------- расписание ----------
+function dayHours(cfg, k) {
+  if ((cfg.daysOff || []).includes(k)) return null;
+  const h = cfg.hours[dow(k)];
+  return h ? [toMin(h[0]), toMin(h[1])] : null;
+}
+const occupied = (st, k, excl) => st.bookings.filter(b => b.date === k && b.status !== 'cancelled' && b.start != null && b.dur != null && b.id !== excl);
+const boxFree = (occ, box, t, dur) => occ.every(r => !((r.box == null || r.box === box) && t < r.start + r.dur && r.start < t + dur));
+function freeSlots(cfg, occ, k, dur, now) {
+  const hh = dayHours(cfg, k);
+  if (!hh || k < now.date) return [];
+  const minT = k === now.date ? now.min + LEAD : -1, out = [];
+  for (let t = hh[0]; t <= hh[1] - dur; t += STEP) {
+    if (t < minT) continue;
+    for (let b = 0; b < cfg.boxes; b++) if (boxFree(occ, b, t, dur)) { out.push({ t, box: b }); break; }
+  }
+  return out;
+}
+function pick(cfg, ids, byOwner = false) {
+  if (!Array.isArray(ids) || !ids.length || ids.length > 20 || new Set(ids.map(String)).size !== ids.length)
+    throw new ApiError(400, 'bad_services', 'Выберите услуги');
+  const idx = {}; cfg.categories.forEach(c => c.services.forEach(s => { idx[s.id] = s; }));
+  const items = ids.map(i => {
+    const s = idx[i];
+    if (!s || s.hidden) throw new ApiError(409, 'service_changed', 'Услуга изменилась. Обновите страницу.');
+    if (s.call && !byOwner) throw new ApiError(409, 'call_only', `На «${s.name}» записываем по телефону.`);
+    return s;
+  });
+  const total = items.reduce((a, s) => a + s.price, 0);
+  const dur = items.some(s => s.dur === 'days') ? 'days' : Math.ceil(items.reduce((a, s) => a + s.dur, 0) / STEP) * STEP;
+  return { items, total, dur };
+}
+const snap = items => items.map(s => ({ id: s.id, name: s.name, price: s.price, from: !!s.from }));
+
+// ---------- проверки полей ----------
+function clean(v, max, field, required = false) {
+  if (v == null) v = '';
+  if (typeof v !== 'string') throw new ApiError(400, 'bad_' + field);
+  v = v.replace(/[\x00-\x09\x0b-\x1f\x7f]/g, ' ').trim();
+  if (v.length > max) throw new ApiError(400, 'bad_' + field, 'Слишком длинно: ' + field);
+  if (required && !v) throw new ApiError(400, 'bad_' + field, 'Не заполнено: ' + field);
+  return v;
+}
+function normPhone(v, required = true) {
+  if (!v && !required) return '';
+  let d = String(v || '').replace(/\D/g, '');
+  if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1);
+  if (d.length === 10 && d[0] === '9') d = '7' + d;
+  if (d.length !== 11 || d[0] !== '7') throw new ApiError(400, 'bad_phone', 'Проверьте номер телефона');
+  return `+7 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9, 11)}`;
+}
+const isInt = v => typeof v === 'number' && Number.isInteger(v);
+function checkDate(s) { if (typeof s !== 'string' || !DATE_RE.test(s)) throw new ApiError(400, 'bad_date'); return s; }
+const token = () => Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+const pubBooking = (b, withToken) => Object.assign({ id: b.id, status: b.status, request: b.kind === 'request', date: b.date,
+  start: b.start, dur: b.dur, services: b.services, total: b.total }, withToken ? { token: b.token } : {});
+function publicConfig(cfg) {
+  const out = clone(cfg);
+  out.categories = out.categories.map(c => ({ name: c.name, services: c.services.filter(s => !s.hidden) })).filter(c => c.services.length);
+  return out;
+}
+
+// ---------- запросы ----------
+function handle(method, path, q, body) {
+  const st = fresh(), cfg = st.cfg, now = nowMsk();
+  let m;
+  if (method === 'GET' && path === 'config') return publicConfig(cfg);
+  if (method === 'GET' && path === 'availability') {
+    const ids = (q.get('services') || '').split(',').filter(Boolean);
+    const { total, dur } = pick(cfg, ids);
+    const start = q.get('from') ? checkDate(q.get('from')) : now.date;
+    const days = Math.max(1, Math.min(parseInt(q.get('days')) || AVAIL, HORIZON));
+    const out = [];
+    for (let i = 0; i < days; i++) {
+      const k = addDays(start, i);
+      if (k < now.date || k > addDays(now.date, HORIZON)) continue;
+      const hh = dayHours(cfg, k);
+      if (dur === 'days') { out.push({ date: k, open: !!hh, times: [] }); continue; }
+      out.push({ date: k, open: !!hh, hours: hh ? [hm(hh[0]), hm(hh[1])] : null,
+                 times: hh ? freeSlots(cfg, occupied(st, k), k, dur, now).map(s => s.t) : [] });
+    }
+    return { dur, total, request: dur === 'days', days: out, now: now.iso.slice(0, 16) + '+03:00' };
+  }
+  if (method === 'POST' && path === 'bookings') {
+    if (body.website) throw new ApiError(400, 'bad_request');
+    const { items, total, dur } = pick(cfg, body.services);
+    const d = checkDate(body.date);
+    if (d < now.date || d > addDays(now.date, HORIZON)) throw new ApiError(400, 'bad_date', 'Выберите другой день');
+    const name = clean(body.name, 60, 'name', true);
+    if (name.length < 2) throw new ApiError(400, 'bad_name', 'Укажите имя');
+    const phone = normPhone(body.phone), car = clean(body.car, 80, 'car'), comment = clean(body.comment, 500, 'comment');
+    const request = dur === 'days';
+    if (!dayHours(cfg, d)) throw new ApiError(409, 'day_closed', 'В этот день мойка не работает');
+    let start = null, box = null;
+    if (body.idem) { const prev = st.bookings.find(b => b.idem === body.idem); if (prev) return pubBooking(prev, true); }
+    const active = st.bookings.filter(b => b.phone === phone && ['new', 'confirmed'].includes(b.status) && b.date >= now.date && ['online', 'request'].includes(b.kind)).length;
+    if (active >= MAX_ACTIVE) throw new ApiError(429, 'too_many_active', 'У вас уже есть несколько записей. Позвоните нам, пожалуйста.');
+    if (!request) {
+      start = body.start;
+      if (!isInt(start)) throw new ApiError(400, 'bad_start', 'Выберите время');
+      const ok = freeSlots(cfg, occupied(st, d), d, dur, now).find(s => s.t === start);
+      if (!ok) throw new ApiError(409, 'slot_taken', 'Это время только что заняли. Выберите другое.');
+      box = ok.box;
+    }
+    const b = { id: st.next++, kind: request ? 'request' : 'online', status: request || cfg.confirm ? 'new' : 'confirmed',
+      date: d, start, dur: request ? null : dur, box, services: snap(items), total, name, phone, car, comment,
+      token: token(), idem: body.idem || null, seen: 0, u: 1, created_at: now.iso, updated_at: now.iso };
+    st.bookings.push(b); save();
+    return pubBooking(b, true);
+  }
+  if ((m = path.match(/^bookings\/(\d+)$/)) && method === 'GET') {
+    const b = st.bookings.find(x => x.id === +m[1]);
+    if (!b || b.token !== q.get('token')) throw new ApiError(404, 'not_found', 'Запись не найдена');
+    return pubBooking(b);
+  }
+  if ((m = path.match(/^bookings\/(\d+)\/cancel$/)) && method === 'POST') {
+    const b = st.bookings.find(x => x.id === +m[1]);
+    if (!b || b.token !== body.token) throw new ApiError(404, 'not_found', 'Запись не найдена');
+    if (b.status === 'cancelled') return pubBooking(b);
+    if (!['new', 'confirmed'].includes(b.status)) throw new ApiError(409, 'cannot_cancel', 'Эту запись уже нельзя отменить');
+    if (b.start != null && (b.date < now.date || (b.date === now.date && b.start <= now.min))) throw new ApiError(409, 'cannot_cancel', 'Время записи уже прошло');
+    b.status = 'cancelled'; b.seen = 0; b.updated_at = now.iso; save();
+    return pubBooking(b);
+  }
+  // --- кабинет владельца (в демо вход без ключа)
+  if (path === 'owner/bookings' && method === 'GET') {
+    const frm = q.get('from') ? checkDate(q.get('from')) : addDays(now.date, -1);
+    const to = q.get('to') ? checkDate(q.get('to')) : addDays(now.date, 14);
+    const rows = st.bookings.filter(b => b.date >= frm && b.date <= to)
+      .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.start ?? 9999) - (b.start ?? 9999));
+    const reqs = st.bookings.filter(b => b.kind === 'request' && b.status === 'new' && b.start == null).sort((a, b) => a.date < b.date ? -1 : 1);
+    return { bookings: rows.map(ownerView), requests: reqs.map(ownerView),
+             unseen: st.bookings.filter(b => !b.seen && ['online', 'request'].includes(b.kind)).length, now: now.iso };
+  }
+  if (path === 'owner/bookings' && method === 'POST') {
+    const kind = body.kind;
+    if (!['manual', 'block'].includes(kind)) throw new ApiError(400, 'bad_kind');
+    const d = checkDate(body.date), { start, dur } = body, box = body.box ?? null;
+    if (!isInt(start) || start < 0 || start >= 1440 || !isInt(dur) || dur < 15 || dur > 1440 || start + dur > 1440) throw new ApiError(400, 'bad_time', 'Проверьте время');
+    if (box !== null && (!isInt(box) || box < 0 || box >= cfg.boxes)) throw new ApiError(400, 'bad_box');
+    if (kind === 'manual' && box === null) throw new ApiError(400, 'bad_box', 'Выберите бокс');
+    let services = [], total = 0;
+    if (body.services && body.services.length) { const p = pick(cfg, body.services, true); services = snap(p.items); total = p.total; }
+    if (isInt(body.total) && body.total >= 0) total = body.total;
+    const occ = occupied(st, d), boxes = box === null ? [...Array(cfg.boxes).keys()] : [box];
+    if (boxes.some(x => !boxFree(occ, x, start, dur)) && !body.force) throw new ApiError(409, 'overlap', 'На это время уже есть запись');
+    const b = { id: st.next++, kind, status: 'confirmed', date: d, start, dur, box, services, total,
+      name: clean(body.name, 60, 'name'), phone: normPhone(body.phone, false), car: clean(body.car, 80, 'car'),
+      comment: clean(body.comment, 500, 'comment'), token: token(), seen: 1, u: 1, created_at: now.iso, updated_at: now.iso };
+    st.bookings.push(b); save();
+    return ownerView(b);
+  }
+  if ((m = path.match(/^owner\/bookings\/(\d+)$/)) && method === 'PATCH') {
+    const b = st.bookings.find(x => x.id === +m[1]);
+    if (!b) throw new ApiError(404, 'not_found');
+    const sets = {};
+    if ('status' in body) {
+      if (!['new', 'confirmed', 'done', 'noshow', 'cancelled'].includes(body.status)) throw new ApiError(400, 'bad_status');
+      sets.status = body.status;
+    }
+    if (['date', 'start', 'dur', 'box'].some(k => k in body)) {
+      const d = checkDate(body.date ?? b.date), start = body.start ?? b.start, dur = body.dur ?? b.dur;
+      const box = 'box' in body ? body.box : b.box;
+      if (!isInt(start) || start < 0 || start >= 1440 || !isInt(dur) || dur < 15 || dur > 1440 || start + dur > 1440) throw new ApiError(400, 'bad_time', 'Проверьте время');
+      if (box !== null && (!isInt(box) || box < 0 || box >= cfg.boxes)) throw new ApiError(400, 'bad_box');
+      if (box === null && b.kind !== 'block') throw new ApiError(400, 'bad_box', 'Выберите бокс');
+      const occ = occupied(st, d, b.id), boxes = box === null ? [...Array(cfg.boxes).keys()] : [box];
+      if (boxes.some(x => !boxFree(occ, x, start, dur)) && !body.force) throw new ApiError(409, 'overlap', 'На это время уже есть запись');
+      Object.assign(sets, { date: d, start, dur, box });
+    }
+    for (const [f, ml] of [['name', 60], ['car', 80], ['comment', 500]]) if (f in body) sets[f] = clean(body[f], ml, f);
+    if ('phone' in body) sets.phone = normPhone(body.phone, false);
+    if ('total' in body) { if (!isInt(body.total) || body.total < 0) throw new ApiError(400, 'bad_total'); sets.total = body.total; }
+    if (!Object.keys(sets).length) throw new ApiError(400, 'nothing_to_change');
+    Object.assign(b, sets, { seen: 1, updated_at: now.iso }); save();
+    return ownerView(b);
+  }
+  if (path === 'owner/seen' && method === 'POST') {
+    (body.ids || []).forEach(id => { const b = st.bookings.find(x => x.id === id); if (b) b.seen = 1; });
+    save(); return { ok: true };
+  }
+  if (path === 'owner/config' && method === 'GET') return Object.assign(clone(cfg), { telegram_link: '' });
+  if (path === 'owner/config' && method === 'PUT') {
+    if ('hours' in body) {
+      const h = {};
+      for (const [k, v] of Object.entries(body.hours || {})) {
+        if (!DOWS.includes(k)) throw new ApiError(400, 'bad_hours');
+        if (v == null) continue;
+        if (!Array.isArray(v) || v.length !== 2 || !TIME_RE.test(v[0]) || !TIME_RE.test(v[1]) || toMin(v[0]) >= toMin(v[1])) throw new ApiError(400, 'bad_hours', 'Проверьте часы работы');
+        h[k] = v;
+      }
+      cfg.hours = h;
+    }
+    if ('boxes' in body) { if (!isInt(body.boxes) || body.boxes < 1 || body.boxes > 20) throw new ApiError(400, 'bad_boxes'); cfg.boxes = body.boxes; }
+    if ('categories' in body) {
+      const seen = new Set();
+      cfg.categories = (body.categories || []).map(c => ({ name: clean(c.name, 60, 'category', true), services: (c.services || []).map(s => {
+        let id = s.id; if (!id || seen.has(id)) id = 's' + Math.random().toString(16).slice(2, 10); seen.add(id);
+        if (!isInt(s.price) || s.price < 0 || s.price > 1e6) throw new ApiError(400, 'bad_price', 'Неверная цена: ' + s.name);
+        return { id, name: clean(s.name, 100, 'service', true), price: s.price, from: !!s.from, desc: clean(s.desc, 400, 'desc'),
+                 dur: s.dur === 'days' ? 'days' : (isInt(s.dur) && s.dur > 0 ? s.dur : 60), hidden: !!s.hidden, call: !!s.call };
+      }) }));
+    }
+    if ('confirm' in body) cfg.confirm = !!body.confirm;
+    if ('daysOff' in body) cfg.daysOff = [...new Set((body.daysOff || []).filter(x => DATE_RE.test(x)))].sort();
+    if ('phones' in body) cfg.phones = (body.phones || []).map(p => ({ value: '+' + normPhone(p.value).replace(/\D/g, ''), label: clean(p.label, 30, 'label') }));
+    cfg._version = now.iso + '.' + Math.random().toString(16).slice(2, 6);
+    save();
+    return Object.assign(clone(cfg), { telegram_link: '' });
+  }
+  throw new ApiError(404, 'not_found', 'Нет такого адреса');
+}
+
+// ---------- живое расписание для показа ----------
+function rng(seedStr) {
+  let h = 1779033703 ^ seedStr.length;
+  for (let i = 0; i < seedStr.length; i++) { h = Math.imul(h ^ seedStr.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+  return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; };
+}
+function seedState(cfg, startId) {
+  const now = nowMsk(), r = rng(SLUG + VER + now.date), B = [];
+  let id = startId;
+  const pickOne = a => a[Math.floor(r() * a.length)];
+  const NAMES = ['Алексей', 'Мария', 'Дмитрий', 'Ольга', 'Сергей', 'Анна', 'Игорь', 'Екатерина', 'Павел', 'Наталья', 'Артём', 'Виктор', 'Юлия', 'Максим', 'Илья', 'Светлана'];
+  const CARS = ['Kia Rio, белый', 'Hyundai Solaris, серый', 'Toyota Camry, чёрный', 'VW Polo, синий', 'Skoda Octavia, белый', 'BMW X5, чёрный',
+                'Haval Jolion, серый', 'Lada Vesta, белая', 'Mercedes E, чёрный', 'Chery Tiggo 7, красный', 'Geely Monjaro, белый', 'Kia Sportage, серый'];
+  const phone = () => `+7 (900) ${100 + Math.floor(r() * 899)}-${String(10 + Math.floor(r() * 89))}-${String(10 + Math.floor(r() * 89))}`;
+  const all = []; cfg.categories.forEach(c => c.services.forEach(s => { if (!s.hidden) all.push(s); }));
+  const pool = all.filter(s => !s.call && s.dur !== 'days' && s.dur >= 30 && s.dur <= 180);
+  const main = pool.slice(0, Math.max(3, Math.ceil(pool.length / 3)));         // первые позиции прайса — самые ходовые
+  const longOne = all.find(s => s.dur === 'days' && !s.call);
+  if (pool.length) {
+    for (let d = -1; d <= 6; d++) {
+      const k = addDays(now.date, d), hh = dayHours(cfg, k);
+      if (!hh) continue;
+      const load = d < 0 ? 0.6 : d === 0 ? 0.55 : Math.max(0.15, 0.5 - d * 0.06);   // ближайшие дни заняты плотнее
+      for (let box = 0; box < cfg.boxes; box++) {
+        let t = hh[0] + STEP * Math.floor(r() * 3);
+        while (t < hh[1] - 30) {
+          if (r() < load) {
+            const s = r() < 0.75 ? pickOne(main) : pickOne(pool);
+            const dur = Math.ceil(s.dur / STEP) * STEP;
+            if (t + dur > hh[1]) break;
+            const past = k < now.date || (k === now.date && t + dur <= now.min);
+            const online = r() < 0.6;
+            B.push({ id: id++, kind: online ? 'online' : 'manual', status: past ? (r() < 0.93 ? 'done' : 'noshow') : 'confirmed',
+              date: k, start: t, dur, box, services: snap([s]), total: s.price, name: pickOne(NAMES), phone: phone(), car: pickOne(CARS),
+              comment: r() < 0.12 ? pickOne(['Сильно грязный салон', 'Есть собака, шерсть', 'Буду к открытию', 'Нужна безналичная оплата']) : '',
+              token: token(), seen: 1, created_at: now.iso, updated_at: now.iso });
+            t += dur + STEP * Math.floor(r() * 2);
+          } else t += STEP * (1 + Math.floor(r() * 2));
+        }
+      }
+    }
+  }
+  // пара свежих онлайн-записей, которые владелец ещё не видел
+  B.filter(b => b.kind === 'online' && b.status === 'confirmed').slice(-2).forEach(b => { b.seen = 0; });
+  // заявка на долгую работу — ждёт звонка администратора
+  if (longOne) B.push({ id: id++, kind: 'request', status: 'new', date: addDays(now.date, 2), start: null, dur: null, box: null,
+    services: snap([longOne]), total: longOne.price, name: 'Роман', phone: phone(), car: 'Audi Q7, белый', comment: 'Подскажите по срокам',
+    token: token(), seen: 0, created_at: now.iso, updated_at: now.iso });
+  return { cfg, bookings: B, next: id };
+}
+const ownerView = b => { const o = clone(b); delete o.token; delete o.idem; delete o.u; return o; };
+
+// ---------- подмена fetch ----------
+const realFetch = window.fetch.bind(window);
+const rx = new RegExp('/api/' + SLUG + '/(.+)$');
+window.fetch = async (input, init = {}) => {
+  const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+  const m = url.pathname.match(rx);
+  if (!m) return realFetch(input, init);
+  await new Promise(res => setTimeout(res, 120 + Math.random() * 150));
+  let body = {};
+  try { body = init.body ? JSON.parse(init.body) : {}; } catch (e) {}
+  const reply = (status, data) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
+  try { return reply(200, handle((init.method || 'GET').toUpperCase(), m[1], url.searchParams, body || {})); }
+  catch (e) {
+    if (e instanceof ApiError) return reply(e.status, { error: e.error, message: e.message });
+    console.error(e); return reply(500, { error: 'server', message: 'Ошибка в демо' });
+  }
+};
+window.__zapisDemoReset = () => { try { localStorage.removeItem(SKEY); } catch (e) {} MEM = null; };
+})();
+</script>
+<script>
+const DATA = {"slug": "m-avto", "name": "М-Авто", "accent": "#F76B15"};
+</script>
+<script>
+(() => {
+const D = DATA, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const API = '/api/' + D.slug + '/owner';
+const KEYK = 'ownk_' + D.slug;
+// DEMO = показ для рассылки: тот же кабинет, но данные живут в этом браузере (demo_server.js), вход без ключа
+const DEMO = true;
+const DOW = ['sun','mon','tue','wed','thu','fri','sat'];
+const DOW_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const DOW_ORDER = ['mon','tue','wed','thu','fri','sat','sun'];
+const DOW_ORDER_RU = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const MON_RU = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const ROW = 38;
+const STATUS = {new:'Ждёт подтверждения', confirmed:'Подтверждена', done:'Выполнена', noshow:'Не приехал', cancelled:'Отменена'};
+const I = {
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>',
+  inbox:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M4 13l2.5-7h11L20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13h4.5l1.5 2.5h4l1.5-2.5H20"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.6"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  tg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l8-6"/></svg>'
+};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rub = n => Number(n||0).toLocaleString('ru-RU') + ' ₽';
+const hm = m => String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+const ymd = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const addDays = (k, n) => { const d = new Date(k+'T12:00'); d.setDate(d.getDate()+n); return ymd(d); };
+const dobj = k => new Date(k+'T12:00');
+const plural = (n,a,b,c) => { n=Math.abs(n)%100; const n1=n%10; if(n>10&&n<20) return c; if(n1>1&&n1<5) return b; if(n1===1) return a; return c; };
+const durTxt = m => m==='days' ? 'от 1 дня' : (m<60 ? m+' мин' : (Math.floor(m/60)+' ч' + (m%60 ? ' '+m%60+' мин' : '')));
+const maskPhone = v => { let d=v.replace(/\D/g,''); if(!d) return ''; if(d.startsWith('8')) d='7'+d.slice(1); if(!d.startsWith('7')) d='7'+d; d=d.slice(0,11); let r='+7'; if(d.length>1) r+=' ('+d.slice(1,4); if(d.length>=4) r+=') '+d.slice(4,7); if(d.length>=7) r+='-'+d.slice(7,9); if(d.length>=9) r+='-'+d.slice(9,11); return r; };
+const telHref = p => 'tel:+' + String(p).replace(/\D/g,'');
+
+// ---------- вход по личной ссылке ----------
+let KEY = null;
+(() => {
+  if (DEMO){ KEY = 'demo'; return; }
+  const m = location.hash.match(/k=([A-Za-z0-9_-]{16,})/);
+  if (m){ KEY = m[1]; try{ localStorage.setItem(KEYK, KEY); }catch(e){} history.replaceState(null, '', location.pathname + location.search); }
+  else { try{ KEY = localStorage.getItem(KEYK); }catch(e){} }
+  // ярлык на экране телефона тоже должен знать ключ (на iPhone у ярлыка своё хранилище)
+  if (KEY) $('#mf').href = '/api/' + D.slug + '/owner/manifest?k=' + encodeURIComponent(KEY) + '&p=' + encodeURIComponent(location.pathname);
+})();
+
+const S = {tab:'day', date:null, data:null, cfg:null, online:true, lastOk:null, auth:!!KEY, known:new Set(), first:true, edit:null, dirty:false, editErr:''};
+
+async function api(path, opts={}){
+  const ctl = new AbortController(); const tm = setTimeout(()=>ctl.abort(), opts.timeout || 15000);
+  try{
+    const r = await fetch(API + path, {method: opts.method || 'GET', cache:'no-store', signal: ctl.signal,
+      headers: Object.assign({'X-Owner-Key': KEY || ''}, opts.body ? {'Content-Type':'application/json'} : {}),
+      body: opts.body ? JSON.stringify(opts.body) : undefined});
+    let data = {}; try{ data = await r.json(); }catch(e){}
+    if (r.status === 401){ S.auth = false; render(); }
+    return {ok: r.ok, status: r.status, data: data || {}};
+  }catch(e){ S.online = false; return {ok:false, status:0, data:{error:'network', message:'Нет связи с сервером. Проверьте интернет.'}}; }
+  finally{ clearTimeout(tm); }
+}
+const today = () => S.data ? S.data.now.slice(0,10) : ymd(new Date());
+const nowMin = () => S.data ? toMin(S.data.now.slice(11,16)) : (new Date().getHours()*60 + new Date().getMinutes());
+function dayHours(k){
+  const c = S.cfg; if (!c) return null;
+  if ((c.daysOff||[]).includes(k)) return null;
+  const h = c.hours[DOW[dobj(k).getDay()]]; return h ? [toMin(h[0]), toMin(h[1])] : null;
+}
+function dateHuman(k, withDow=true){
+  const t = today(); const d = dobj(k);
+  const pre = k===t ? 'Сегодня, ' : k===addDays(t,1) ? 'Завтра, ' : k===addDays(t,-1) ? 'Вчера, ' : '';
+  return pre + d.getDate() + ' ' + MON_RU[d.getMonth()] + (pre || !withDow ? '' : ', ' + DOW_RU[d.getDay()].toLowerCase());
+}
+const allB = () => S.data ? S.data.bookings.concat(S.data.requests.filter(r => !S.data.bookings.some(b=>b.id===r.id))) : [];
+const findB = id => allB().find(b => b.id === id);
+const isClient = b => b.kind==='online' || b.kind==='request';
+const svcNames = b => (b.services||[]).map(s=>s.name).join(', ');
+const pending = () => allB().filter(b => b.status==='new' && isClient(b));
+
+// ---------- звук и вибрация при новой записи ----------
+let AC = null;
+document.addEventListener('pointerdown', () => {
+  try{ if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); else if (AC.state === 'suspended') AC.resume(); }catch(e){}
+}, {passive:true});
+function beep(){
+  if (!AC) return; const t = AC.currentTime;
+  [[0,880],[0.2,1320],[0.4,1760]].forEach(([d,f]) => { const o = AC.createOscillator(), g = AC.createGain(); o.type='sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001, t+d); g.gain.exponentialRampToValueAtTime(0.35, t+d+0.02); g.gain.exponentialRampToValueAtTime(0.0001, t+d+0.18);
+    o.connect(g); g.connect(AC.destination); o.start(t+d); o.stop(t+d+0.2); });
+}
+function alertNew(list){
+  beep(); try{ navigator.vibrate && navigator.vibrate([250,120,250]); }catch(e){}
+  const b = list[0];
+  toast((b.kind==='request' && b.start==null ? 'Новая заявка: ' : 'Новая запись: ') + dateHuman(b.date, false) + (b.start!=null ? ', ' + hm(b.start) : '') + (list.length>1 ? ` и ещё ${list.length-1}` : ''), 5000, 'newb');
+}
+
+// ---------- загрузка ----------
+async function load(){
+  const t = today();
+  const r = await api(`/bookings?from=${addDays(t,-1)}&to=${addDays(t,30)}`);
+  if (r.ok){
+    const all = r.data.bookings.concat(r.data.requests);
+    const fresh = all.filter(b => !b.seen && isClient(b) && !S.known.has(b.id) && b.status!=='cancelled');
+    S.data = r.data; S.online = true; S.lastOk = new Date();
+    if (!S.date) S.date = r.data.now.slice(0,10);
+    all.forEach(b => S.known.add(b.id));
+    if (!S.first && fresh.length) alertNew(fresh);
+    S.first = false;
+  }
+  refreshView();
+}
+async function loadCfg(){
+  const r = await api('/config');
+  if (r.ok){ S.cfg = r.data; if (!S.dirty) S.edit = null; }
+  return r.ok;
+}
+async function markSeen(ids){
+  ids = ids.filter(id => { const b = findB(id); return b && !b.seen; });
+  if (!ids.length) return;
+  ids.forEach(id => { const b = findB(id); if (b) b.seen = 1; });
+  if (S.data) S.data.unseen = Math.max(0, (S.data.unseen||0) - ids.length);
+  updateBadges();
+  await api('/seen', {method:'POST', body:{ids}});
+}
+function patchLocal(row){
+  if (!S.data) return;
+  ['bookings','requests'].forEach(k => { const i = S.data[k].findIndex(b => b.id === row.id); if (i >= 0) S.data[k][i] = row; });
+  if (!S.data.bookings.some(b => b.id === row.id) && row.start != null) S.data.bookings.push(row);
+  S.data.requests = S.data.requests.filter(b => b.status==='new' && b.start==null);
+}
+
+// ---------- отрисовка ----------
+function render(){
+  if (!S.auth){
+    $('#app').innerHTML = KEY ? `<div class="login"><h1>Ссылка для входа больше не действует</h1><p>Попросите новую ссылку у того, кто подключал вам онлайн-запись. Старую ссылку можно удалить.</p></div>`
+      : `<div class="login"><h1>Кабинет ${esc(D.name)}</h1><p>Откройте личную ссылку для входа из сообщения, которое вам прислали при подключении. Пароль не нужен.</p><p class="small">Ссылка личная — не пересылайте её никому.</p></div>`;
+    return;
+  }
+  const tabs = [['day','Расписание',I.cal],['req','Заявки',I.inbox],['price','Цены',I.tag],['set','Настройки',I.gear]];
+  $('#app').innerHTML = `<div class="wrap">
+    ${DEMO ? `<div class="demo-bar"><span>Демо кабинета · всё работает, данные только в этом браузере</span><a href="../">← Страница записи</a></div>` : ''}
+    <div class="top"><h1>${esc(D.name)}</h1><div class="sync" id="sync"></div></div>
+    <div id="off"></div>
+    <div id="view"></div>
+  </div>
+  <div class="nav"><div class="in">${tabs.map(([k,t,ic])=>`<button data-tab="${k}" class="${S.tab===k?'on':''}">${ic}${t}<span class="bdg" id="bdg-${k}" hidden></span></button>`).join('')}</div></div>
+  ${S.tab==='day' ? `<button class="fab" id="fab" aria-label="Добавить запись">${I.plus}</button>` : ''}`;
+  $$('.nav button').forEach(b => b.onclick = () => {
+    if (S.tab === b.dataset.tab) return;
+    if (S.dirty && !confirm('Изменения в ценах не сохранены. Уйти без сохранения?')) return;
+    if (S.tab === 'price'){ S.dirty = false; S.edit = null; S.editErr = ''; }
+    S.tab = b.dataset.tab; render(); window.scrollTo(0,0);
+  });
+  const fab = $('#fab'); if (fab) fab.onclick = () => openAdd({date:S.date});
+  refreshView(true);
+}
+function refreshView(full){
+  if (!S.auth || !$('#view')) return;
+  const sync = $('#sync');
+  if (sync){ sync.className = 'sync' + (S.online ? '' : ' off');
+    sync.innerHTML = `<i></i>${S.lastOk ? (S.online ? 'Обновлено в ' : 'Нет связи · данные на ') + S.lastOk.toTimeString().slice(0,5) : 'Загрузка…'}`; }
+  $('#off').innerHTML = S.online ? '' : `<div class="offline">Нет связи с сервером. Записи не потеряются — обновим, как только появится интернет.</div>`;
+  updateBadges();
+  // цены и настройки не перерисовываем сами, чтобы не сбить то, что владелец сейчас вводит
+  const v = $('#view');
+  if (!full && (S.tab==='price' || S.tab==='set') && v.dataset.ready) return;
+  if (!S.data || !S.cfg){ v.innerHTML = `<div class="empty"><span class="spin"></span>&nbsp; Загружаем записи…</div>`; return; }
+  if (S.tab==='day') dayView(v);
+  else if (S.tab==='req') reqView(v);
+  else if (S.tab==='price') priceView(v);
+  else setView(v);
+  v.dataset.ready = '1';
+}
+function updateBadges(){
+  const unseenDay = allB().filter(b => !b.seen && b.kind==='online' && b.status!=='cancelled').length;
+  const req = pending().length;
+  const set = (id, n) => { const e = $('#bdg-'+id); if (e){ e.hidden = !n; e.textContent = n; } };
+  set('day', unseenDay); set('req', req);
+  const n = S.data ? S.data.unseen : 0;
+  document.title = (n ? `(${n}) ` : '') + 'Кабинет · ' + D.name;
+}
+
+// ---------- расписание ----------
+function dayView(v){
+  const k = S.date, t = today(), cfg = S.cfg, n = cfg.boxes;
+  const items = S.data.bookings.filter(b => b.date===k && b.start!=null && b.dur);
+  const act = items.filter(b => b.status!=='cancelled');
+  const hh = dayHours(k);
+  let g0 = hh ? hh[0] : 9*60, g1 = hh ? hh[1] : 21*60;
+  act.forEach(b => { g0 = Math.min(g0, b.start); g1 = Math.max(g1, b.start + b.dur); });
+  g0 = Math.floor(g0/30)*30; g1 = Math.ceil(g1/30)*30;
+  const real = act.filter(b => b.kind!=='block');
+  const sum = real.filter(b => b.status!=='noshow').reduce((a,b)=>a+b.total, 0);
+  const busy = real.reduce((a,b)=>a+b.dur, 0);
+  const load = hh ? Math.min(100, Math.round(busy / ((hh[1]-hh[0]) * n) * 100)) : 0;
+  const days = [...Array(16)].map((_,i)=>addDays(t, i-1));
+  const cnt = d => S.data.bookings.filter(b => b.date===d && b.status!=='cancelled' && b.kind!=='block').length;
+  const nw = d => S.data.bookings.some(b => b.date===d && !b.seen && b.kind==='online' && b.status!=='cancelled');
+  let html = `<div class="days" id="days">${days.map(d=>{ const dd=dobj(d); const c=cnt(d); return `<button class="day ${d===k?'on':''} ${dayHours(d)?'':'off'}" data-d="${d}">${nw(d)?'<i class="nw"></i>':''}<div class="w">${d===t?'Сег':d===addDays(t,-1)?'Вчера':DOW_RU[dd.getDay()]}</div><div class="d">${dd.getDate()}</div><div class="c">${c||''}</div></button>`; }).join('')}</div>
+    <div class="kpis"><div class="kpi"><div class="v">${real.length}</div><div class="k">${plural(real.length,'запись','записи','записей')}</div></div>
+    <div class="kpi"><div class="v">${hh ? load+'%' : '—'}</div><div class="k">загрузка</div></div>
+    <div class="kpi"><div class="v">${rub(sum)}</div><div class="k">по записям</div></div></div>`;
+  if (!hh && !act.length){
+    const off = (cfg.daysOff||[]).includes(k);
+    html += `<div class="closed-card"><b>Выходной</b><br>${off ? 'Этот день отмечен как выходной.' : 'По графику работы мойка в этот день закрыта.'}<br><br>
+      ${off ? `<button class="btn" id="openDay">Сделать рабочим днём</button>` : `<button class="btn" id="goSet">Изменить часы работы</button>`}</div>`;
+  } else {
+    const H = (g1 - g0) / 30 * ROW;
+    const lbl = []; for (let m = Math.ceil(g0/60)*60; m <= g1; m += 60) lbl.push(m);
+    html += `<div class="grid-wrap"><div class="grid" style="--n:${n}">
+      <div class="gh"></div>${[...Array(n)].map((_,i)=>`<div class="gh">Бокс ${i+1}</div>`).join('')}
+      <div class="gt" style="height:${H}px">${lbl.map(m=>`<span style="top:${(m-g0)/30*ROW}px${m===g0?';transform:none;top:3px':''}">${m<g1?hm(m):''}</span>`).join('')}</div>
+      ${[...Array(n)].map((_,bx)=>`<div class="col ${hh?'':'closed'}" data-box="${bx}" style="height:${H}px">${act.filter(b => b.box===bx || b.box==null).map(b => blockHtml(b, g0)).join('')}</div>`).join('')}
+    </div></div>
+    <div class="hint">Нажмите на свободное место, чтобы добавить запись или закрыть время. Нажмите на запись, чтобы позвонить, перенести или отменить.</div>`;
+  }
+  const canc = items.filter(b => b.status==='cancelled' && b.kind!=='block');
+  if (canc.length) html += `<div class="h2 pad">Отменённые</div>` + canc.map(b => `<div class="card" data-open="${b.id}"><div class="t">${hm(b.start)} · ${esc(svcNames(b) || b.name || 'Запись')}</div><div class="s">${esc(b.name)}${b.phone ? ' · ' + esc(b.phone) : ''}</div></div>`).join('');
+  v.innerHTML = html;
+  // линия «сейчас»
+  if (k === t && hh !== undefined){
+    const nm = nowMin(), wrap = v.querySelector('.grid');
+    if (wrap && nm >= g0 && nm <= g1){ const ln = document.createElement('div'); ln.className = 'now-line'; ln.style.top = (v.querySelector('.gh').offsetHeight + (nm - g0)/30*ROW) + 'px'; wrap.style.position = 'relative'; wrap.append(ln); }
+  }
+  const strip = $('#days'); const on = strip.querySelector('.day.on'); if (on) strip.scrollLeft = on.offsetLeft - 16 - 56;
+  strip.querySelectorAll('.day').forEach(b => b.onclick = () => { S.date = b.dataset.d; refreshView(); });
+  v.querySelectorAll('.col').forEach(col => col.addEventListener('click', e => {
+    if (e.target.closest('.bk')) return;
+    const r = col.getBoundingClientRect(); const m = g0 + Math.floor((e.clientY - r.top) / ROW) * 30;
+    openAdd({date:k, start:m, box:+col.dataset.box});
+  }));
+  v.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', e => { e.stopPropagation(); openBooking(+el.dataset.open); }));
+  const od = $('#openDay'); if (od) od.onclick = async () => { const r = await api('/config', {method:'PUT', body:{daysOff:(cfg.daysOff||[]).filter(x=>x!==k)}}); if (r.ok){ S.cfg = r.data; toast('День снова рабочий'); refreshView(); } else toast(r.data.message||'Не получилось'); };
+  const gs = $('#goSet'); if (gs) gs.onclick = () => { S.tab='set'; render(); };
+}
+function blockHtml(b, g0){
+  const top = (b.start - g0) / 30 * ROW + 1, h = Math.max(b.dur / 30 * ROW - 3, 24);
+  const cls = b.kind==='block' ? 'block' : b.status==='new' ? 'new' : b.status==='done' ? 'done' : b.status==='noshow' ? 'noshow' : b.kind==='manual' ? 'manual' : '';
+  const time = `${hm(b.start)}–${hm(b.start + b.dur)}`;
+  if (b.kind==='block') return `<div class="bk block" data-open="${b.id}" style="top:${top}px;height:${h}px"><b>${time}</b><div class="x">Закрыто${b.comment?' · '+esc(b.comment):''}${b.box==null?' · все боксы':''}</div></div>`;
+  const tag = !b.seen && b.kind==='online' ? '<span class="tag">НОВАЯ</span>' : b.status==='new' ? '<span class="tag">ПОДТВЕРДИТЬ</span>' : '';
+  return `<div class="bk ${cls}" data-open="${b.id}" style="top:${top}px;height:${h}px">${tag}<b>${time}${b.status==='done'?' ✓':''}</b><div class="x">${esc(svcNames(b) || 'Запись')}</div>${h>60?`<div class="x">${esc([b.car, b.name].filter(Boolean).join(' · '))}</div>`:''}</div>`;
+}
+
+// ---------- карточка записи ----------
+function openBooking(id){
+  const b = findB(id); if (!b) return;
+  if (isClient(b)) markSeen([id]);
+  const when = b.start != null ? `${dateHuman(b.date)}, ${hm(b.start)}–${hm(b.start + b.dur)}` : `${dateHuman(b.date)} (желаемый день)`;
+  const src = b.kind==='online' ? 'Онлайн-запись' : b.kind==='request' ? 'Заявка с сайта' : b.kind==='manual' ? 'Добавлена вами' : 'Закрытое время';
+  const created = new Date(b.created_at);
+  let body = '', foot = '';
+  if (b.kind==='block'){
+    body = `<div class="rows"><div class="r"><span>Когда</span><span>${when}</span></div><div class="r"><span>Бокс</span><span>${b.box==null?'Все боксы':'Бокс '+(b.box+1)}</span></div>${b.comment?`<div class="r"><span>Причина</span><span>${esc(b.comment)}</span></div>`:''}</div>`;
+    foot = b.status==='cancelled' ? '' : `<button class="btn" data-act="move">Изменить</button><button class="btn dan" data-act="unblock">Открыть время</button>`;
+  } else {
+    body = (b.phone ? `<a class="call" href="${telHref(b.phone)}">${I.phone}Позвонить ${esc(b.phone)}</a>` : '') + `
+      <div class="rows">
+        <div class="r"><span>Когда</span><span>${when}</span></div>
+        ${b.box!=null?`<div class="r"><span>Бокс</span><span>${b.box+1}</span></div>`:''}
+        <div class="r"><span>Статус</span><span><span class="chip-st st-${b.status}" style="margin:0">${STATUS[b.status]}</span></span></div>
+        ${b.services.length?`<div class="r"><span>Услуги</span><span>${esc(svcNames(b))}</span></div>`:''}
+        <div class="r"><span>Сумма</span><span><b>${rub(b.total)}</b></span></div>
+        ${b.car?`<div class="r"><span>Авто</span><span>${esc(b.car)}</span></div>`:''}
+        ${b.name?`<div class="r"><span>Клиент</span><span>${esc(b.name)}</span></div>`:''}
+        ${b.comment?`<div class="r"><span>Комментарий</span><span>${esc(b.comment)}</span></div>`:''}
+        <div class="r"><span>Источник</span><span>${src} · ${created.getDate()} ${MON_RU[created.getMonth()]}, ${created.toTimeString().slice(0,5)}</span></div>
+      </div>`;
+    const acts = [];
+    if (b.status==='new' && b.start!=null) acts.push(`<button class="btn pri" data-act="confirm">${I.check}Подтвердить</button>`);
+    if (b.start==null && b.status!=='cancelled') acts.push(`<button class="btn pri" data-act="move">Назначить время</button>`);
+    if (b.status==='confirmed') acts.push(`<button class="btn okb" data-act="done">${I.check}Выполнено</button>`, `<button class="btn" data-act="noshow">Не приехал</button>`);
+    if (['new','confirmed'].includes(b.status) && b.start!=null) acts.push(`<button class="btn" data-act="move">Перенести</button>`);
+    if (['new','confirmed'].includes(b.status)) acts.push(`<button class="btn dan" data-act="cancel">${b.status==='new'?'Отклонить':'Отменить'}</button>`);
+    if (['done','noshow','cancelled'].includes(b.status) && b.start!=null) acts.push(`<button class="btn" data-act="restore">Вернуть в работу</button>`);
+    foot = acts.join('');
+  }
+  openSheet(b.kind==='block' ? 'Закрытое время' : b.kind==='request' && b.start==null ? 'Заявка' : 'Запись', body, foot);
+  $$('#sheet [data-act]').forEach(btn => btn.onclick = () => act(b, btn.dataset.act));
+}
+async function act(b, a){
+  if (a==='move') return openMove(b);
+  let body;
+  if (a==='confirm' || a==='restore') body = {status:'confirmed'};
+  else if (a==='done') body = {status:'done'};
+  else if (a==='noshow') body = {status:'noshow'};
+  else if (a==='unblock') body = {status:'cancelled'};
+  else if (a==='cancel'){
+    const msg = isClient(b) ? 'Отменить запись? Клиент увидит отмену на странице записи, но лучше позвоните ему и предупредите.' : 'Отменить запись?';
+    if (!confirm(msg)) return; body = {status:'cancelled'};
+  }
+  const r = await api(`/bookings/${b.id}`, {method:'PATCH', body});
+  if (!r.ok) return toast(r.data.message || 'Не получилось. Попробуйте ещё раз.');
+  patchLocal(r.data); closeSheet(); refreshView();
+  toast({confirmed: a==='restore' ? 'Запись снова в работе' : 'Запись подтверждена', done:'Отмечено: выполнено', noshow:'Отмечено: не приехал', cancelled: a==='unblock' ? 'Время снова открыто для записи' : 'Запись отменена'}[body.status]);
+}
+
+// ---------- выбор времени (перенос, назначение заявки) ----------
+function durOptions(cur, open, close){
+  const opts = [30,45,60,90,120,150,180,240,300,360,480,600,720].filter(m => m <= 1440);
+  if (cur && !opts.includes(cur)) opts.push(cur);
+  opts.sort((a,b)=>a-b);
+  const full = open!=null ? close - open : null;
+  return opts.map(m => `<option value="${m}" ${m===cur?'selected':''}>${durTxt(m)}${m===full?' (весь день)':''}</option>`).join('') + (full && !opts.includes(full) ? `<option value="${full}">${durTxt(full)} (весь день)</option>` : '');
+}
+function timeOptions(cur, from=6*60, to=23*60+30){
+  let s = ''; for (let m = from; m <= to; m += 30) s += `<option value="${m}" ${m===cur?'selected':''}>${hm(m)}</option>`;
+  if (cur != null && cur % 30) s = `<option value="${cur}" selected>${hm(cur)}</option>` + s;
+  return s;
+}
+function dayOptions(cur, back=0){
+  const t = today(); let s = '';
+  for (let i = -back; i < 31; i++){ const k = addDays(t, i); s += `<option value="${k}" ${k===cur?'selected':''}>${dateHuman(k)}${dayHours(k)?'':' — выходной'}</option>`; }
+  return s;
+}
+function boxSeg(cur, withAll){
+  const n = S.cfg.boxes; let s = withAll ? `<button data-box="all" class="${cur==null?'on':''}">Все боксы</button>` : '';
+  for (let i = 0; i < n; i++) s += `<button data-box="${i}" class="${cur===i?'on':''}">Бокс ${i+1}</button>`;
+  return `<div class="seg" id="boxSeg">${s}</div>`;
+}
+function bindSeg(id, cb){ $$(`#${id} button`).forEach(b => b.onclick = () => { $$(`#${id} button`).forEach(x=>x.classList.remove('on')); b.classList.add('on'); cb(b); }); }
+function openMove(b){
+  const hh = dayHours(b.date) || [9*60, 21*60];
+  const st = {date:b.date, start: b.start ?? hh[0], box: b.box ?? (b.kind==='block' ? null : 0), dur: b.dur || 120};
+  const body = `<div id="mvErr"></div>
+    <div class="field"><label>День</label><select id="mvDate">${dayOptions(st.date, 1)}</select></div>
+    <label class="small" style="display:block;margin-bottom:6px">Бокс</label>${boxSeg(st.box, b.kind==='block')}
+    <div class="two"><div class="field"><label>Начало</label><select id="mvStart">${timeOptions(st.start)}</select></div>
+    <div class="field"><label>Длительность</label><select id="mvDur">${durOptions(st.dur, hh[0], hh[1])}</select></div></div>
+    <div class="small">${b.kind!=='block' && isClient(b) ? 'Клиент увидит новое время на странице записи. Лучше позвоните и предупредите его.' : ''}</div>`;
+  openSheet(b.start==null ? 'Назначить время' : 'Перенести', body, `<button class="btn" id="mvCancel">Назад</button><button class="btn pri" id="mvSave">Сохранить</button>`);
+  bindSeg('boxSeg', x => st.box = x.dataset.box==='all' ? null : +x.dataset.box);
+  $('#mvDate').onchange = e => st.date = e.target.value;
+  $('#mvStart').onchange = e => st.start = +e.target.value;
+  $('#mvDur').onchange = e => st.dur = +e.target.value;
+  $('#mvCancel').onclick = () => openBooking(b.id);
+  $('#mvSave').onclick = async () => {
+    const body = {date:st.date, start:st.start, dur:st.dur, box:st.box};
+    if (b.start == null) body.status = 'confirmed';
+    let r = await api(`/bookings/${b.id}`, {method:'PATCH', body});
+    if (r.status===409 && r.data.error==='overlap' && confirm('На это время в этом боксе уже есть запись. Всё равно поставить?')) r = await api(`/bookings/${b.id}`, {method:'PATCH', body:{...body, force:true}});
+    if (!r.ok){ if (r.status !== 409) $('#mvErr').innerHTML = `<div class="err-box">${esc(r.data.message || 'Не получилось сохранить')}</div>`; return; }
+    patchLocal(r.data); S.date = r.data.date; closeSheet(); refreshView(); toast('Время сохранено');
+  };
+}
+
+// ---------- добавить запись / закрыть время ----------
+function openAdd(o){
+  const k = o.date || S.date || today(); const hh = dayHours(k) || [9*60, 21*60];
+  let start = o.start;
+  if (start == null){ start = k===today() ? Math.max(hh[0], Math.ceil((nowMin()+1)/30)*30) : hh[0]; }
+  const st = {mode:'manual', date:k, start, box:o.box ?? 0, dur:60, sel:[], total:0, totalTouched:false, reason:'Обед'};
+  const cats = S.cfg.categories;
+  const body = `<div id="adErr"></div>
+    <div class="seg" id="modeSeg"><button data-m="manual" class="on">Запись клиента</button><button data-m="block">Закрыть время</button></div>
+    <div class="field"><label>День</label><select id="adDate">${dayOptions(st.date, 1)}</select></div>
+    <label class="small" style="display:block;margin-bottom:6px">Бокс</label><div id="adBox">${boxSeg(st.box, false)}</div>
+    <div class="two"><div class="field"><label>Начало</label><select id="adStart">${timeOptions(st.start)}</select></div>
+    <div class="field"><label>Длительность</label><select id="adDur">${durOptions(st.dur, hh[0], hh[1])}</select></div></div>
+    <div id="adManual">
+      <label class="small" style="display:block;margin-bottom:6px">Услуги (можно не выбирать)</label>
+      <div class="svc-pick">${cats.map(c => `<div class="cat">${esc(c.name)}</div>` + c.services.filter(s=>!s.hidden).map(s => `<label><input type="checkbox" value="${esc(s.id)}"><span>${esc(s.name)}</span><b>${rub(s.price)}</b></label>`).join('')).join('')}</div>
+      <div class="field"><label>Сумма, ₽</label><input id="adTotal" inputmode="numeric" placeholder="0"></div>
+      <div class="two"><div class="field"><label>Имя</label><input id="adName" placeholder="Необязательно"></div>
+      <div class="field"><label>Телефон</label><input id="adPhone" type="tel" inputmode="tel" placeholder="+7"></div></div>
+      <div class="field"><label>Авто</label><input id="adCar" placeholder="Марка, номер"></div>
+      <div class="field"><label>Комментарий</label><input id="adCom" placeholder="Например: приехал без записи"></div>
+    </div>
+    <div id="adBlock" hidden>
+      <div class="seg" id="reasonSeg">${['Обед','Ремонт','Перерыв','Другое'].map((x,i)=>`<button data-r="${x}" class="${i?'':'on'}">${x}</button>`).join('')}</div>
+      <div class="field"><label>Комментарий</label><input id="adReason" placeholder="Необязательно"></div>
+      <button class="btn" id="adWholeDay" style="width:100%;margin-bottom:12px">Закрыть весь день</button>
+    </div>`;
+  openSheet('Добавить', body, `<button class="btn pri" id="adSave" style="flex-basis:100%">Добавить запись</button>`);
+  const syncDur = () => { $('#adDur').innerHTML = durOptions(st.dur, ...(dayHours(st.date) || [null,null])); };
+  bindSeg('modeSeg', x => { st.mode = x.dataset.m; $('#adManual').hidden = st.mode!=='manual'; $('#adBlock').hidden = st.mode!=='block';
+    $('#adBox').innerHTML = boxSeg(st.mode==='block' ? null : (st.box ?? 0), st.mode==='block'); if (st.mode==='block') st.box = null; else if (st.box==null) st.box = 0;
+    bindSeg('boxSeg', y => st.box = y.dataset.box==='all' ? null : +y.dataset.box);
+    $('#adSave').textContent = st.mode==='block' ? 'Закрыть время' : 'Добавить запись'; });
+  bindSeg('boxSeg', y => st.box = y.dataset.box==='all' ? null : +y.dataset.box);
+  bindSeg('reasonSeg', x => st.reason = x.dataset.r);
+  $('#adDate').onchange = e => { st.date = e.target.value; syncDur(); };
+  $('#adStart').onchange = e => st.start = +e.target.value;
+  $('#adDur').onchange = e => st.dur = +e.target.value;
+  $('#adTotal').oninput = e => { st.totalTouched = true; st.total = parseInt(e.target.value.replace(/\D/g,'')) || 0; };
+  $('#adPhone').oninput = e => e.target.value = maskPhone(e.target.value);
+  $$('.svc-pick input').forEach(cb => cb.onchange = () => {
+    st.sel = $$('.svc-pick input:checked').map(x => x.value);
+    const svcs = cats.flatMap(c => c.services).filter(s => st.sel.includes(s.id));
+    if (!st.totalTouched){ st.total = svcs.reduce((a,s)=>a+s.price, 0); $('#adTotal').value = st.total || ''; }
+    const d = svcs.reduce((a,s)=>a + (s.dur==='days' ? 0 : s.dur), 0);
+    if (d){ st.dur = Math.ceil(d/30)*30; syncDur(); }
+  });
+  $('#adWholeDay').onclick = () => { const h = dayHours(st.date); if (!h){ toast('В этот день мойка и так не работает'); return; } st.start = h[0]; st.dur = h[1]-h[0]; $('#adStart').innerHTML = timeOptions(st.start); syncDur(); $('#adDur').value = st.dur; };
+  $('#adSave').onclick = async () => {
+    const body = st.mode==='block'
+      ? {kind:'block', date:st.date, start:st.start, dur:st.dur, box:st.box, comment:[st.reason!=='Другое'?st.reason:'', $('#adReason').value.trim()].filter(Boolean).join(': ')}
+      : {kind:'manual', date:st.date, start:st.start, dur:st.dur, box:st.box, services:st.sel, total:st.total, name:$('#adName').value.trim(),
+         phone:$('#adPhone').value.replace(/\D/g,'').length>1 ? $('#adPhone').value : '', car:$('#adCar').value.trim(), comment:$('#adCom').value.trim()};
+    let r = await api('/bookings', {method:'POST', body});
+    if (r.status===409 && r.data.error==='overlap' && confirm(st.mode==='block' ? 'На это время уже есть записи. Всё равно закрыть? Записи останутся — им нужно будет позвонить.' : 'На это время в этом боксе уже есть запись. Всё равно добавить?'))
+      r = await api('/bookings', {method:'POST', body:{...body, force:true}});
+    if (!r.ok){ if (r.status !== 409) $('#adErr').innerHTML = `<div class="err-box">${esc(r.data.message || 'Не получилось сохранить')}</div>`; return; }
+    S.data.bookings.push(r.data); S.known.add(r.data.id); S.date = r.data.date; closeSheet(); refreshView();
+    toast(st.mode==='block' ? 'Время закрыто для онлайн-записи' : 'Запись добавлена');
+  };
+}
+
+// ---------- заявки и записи, которые ждут подтверждения ----------
+function reqView(v){
+  const reqs = S.data.requests.filter(b => b.start==null && b.status==='new');
+  const wait = S.data.bookings.filter(b => b.status==='new' && b.kind==='online' && b.start!=null);
+  const card = b => `<div class="card">
+    <div class="t">${b.start!=null ? dateHuman(b.date)+', '+hm(b.start) : 'Желаемый день: '+dateHuman(b.date)}</div>
+    <div class="s">${esc(svcNames(b))} · ${rub(b.total)}</div>
+    <div class="s">${esc([b.name, b.phone, b.car].filter(Boolean).join(' · '))}</div>
+    ${b.comment?`<div class="s">«${esc(b.comment)}»</div>`:''}
+    <div class="acts">${b.phone?`<a class="btn" href="${telHref(b.phone)}">${I.phone}Позвонить</a>`:''}
+      ${b.start!=null?`<button class="btn pri" data-q="confirm" data-id="${b.id}">Подтвердить</button>`:`<button class="btn pri" data-q="move" data-id="${b.id}">Назначить время</button>`}
+      <button class="btn dan" data-q="cancel" data-id="${b.id}">Отклонить</button></div></div>`;
+  let html = '';
+  if (!reqs.length && !wait.length) html = `<div class="empty">Новых заявок нет.<br><span class="small">Здесь появятся записи, которые ждут вашего подтверждения, и заявки на долгие работы (от 1 дня).</span></div>`;
+  if (wait.length) html += `<div class="h2 pad">Ждут подтверждения</div>` + wait.map(card).join('');
+  if (reqs.length) html += `<div class="h2 pad">Заявки на долгие работы</div><div class="hint" style="margin:-4px 16px 10px">Позвоните клиенту, договоритесь о времени и нажмите «Назначить время».</div>` + reqs.map(card).join('');
+  v.innerHTML = html;
+  v.querySelectorAll('[data-q]').forEach(btn => btn.onclick = () => act(findB(+btn.dataset.id), btn.dataset.q));
+  markSeen(reqs.concat(wait).map(b => b.id));
+}
+
+// ---------- цены и услуги ----------
+const DUR_LIST = [15,30,45,60,90,120,150,180,240,300,360,480,600,720];
+const durShort = m => m<60 ? m+' мин' : Math.floor(m/60)+' ч'+(m%60 ? ' '+m%60 : '');
+function priceView(v){
+  if (!S.edit){ S.edit = JSON.parse(JSON.stringify(S.cfg.categories)); S.dirty = false; }
+  const ed = S.edit;
+  v.innerHTML = `${S.editErr?`<div class="err-box" style="margin:12px 16px 0">${esc(S.editErr)}</div>`:''}
+    <div class="hint" style="margin-top:12px">Цены сразу появятся на странице записи. «Скрыта»: услуга пропадёт со страницы, но останется здесь. «Только по звонку»: клиент видит услугу и цену, но вместо записи ему предлагают позвонить вам.</div>` +
+    ed.map((c,ci) => `<div class="cat-h"><input value="${esc(c.name)}" data-cat="${ci}" aria-label="Название раздела"></div>` +
+      c.services.map((s,si) => `<div class="pe ${s.hidden?'hid':''}">
+        <input class="nm" value="${esc(s.name)}" data-f="name" data-c="${ci}" data-s="${si}" aria-label="Название услуги">
+        <div class="ln"><input class="pr" inputmode="numeric" value="${s.price}" data-f="price" data-c="${ci}" data-s="${si}" aria-label="Цена">
+          <select class="du" data-f="dur" data-c="${ci}" data-s="${si}" aria-label="Длительность">${DUR_LIST.concat(DUR_LIST.includes(s.dur)||s.dur==='days'?[]:[s.dur]).map(m=>`<option value="${m}" ${s.dur===m?'selected':''}>${durShort(m)}</option>`).join('')}<option value="days" ${s.dur==='days'?'selected':''}>от 1 дня</option></select>
+          <button class="tg ${s.hidden?'':'on'}" data-f="hidden" data-c="${ci}" data-s="${si}">${s.hidden?'Скрыта':'На сайте'}</button>
+          <button class="del" data-f="del" data-c="${ci}" data-s="${si}" aria-label="Удалить">${I.trash}</button></div>
+        <button class="mode ${s.call?'phone-only':''}" data-f="call" data-c="${ci}" data-s="${si}"><span>Запись: <b>${s.call?'только по звонку':'онлайн'}</b></span><span class="chg">сменить</span></button>
+      </div>`).join('') + `<button class="add-row" data-addsvc="${ci}">+ Услуга в «${esc(c.name)}»</button>`).join('') +
+    `<button class="add-row" id="addCat" style="margin-top:12px">+ Новый раздел</button><div style="height:80px"></div>`;
+  // панель «Сохранить» появляется без перерисовки, чтобы не сбить ввод цены
+  const showSave = () => {
+    if (v.querySelector('.savebar')) return;
+    v.insertAdjacentHTML('beforeend', `<div class="savebar"><div class="in"><button class="btn" id="edUndo">Отменить</button><button class="btn pri" id="edSave">Сохранить изменения</button></div></div>`);
+    bindSave();
+  };
+  const dirty = () => { S.dirty = true; showSave(); };
+  v.querySelectorAll('[data-cat]').forEach(inp => inp.oninput = () => { ed[+inp.dataset.cat].name = inp.value; dirty(); });
+  v.querySelectorAll('.pe [data-f]').forEach(el => {
+    const s = () => ed[+el.dataset.c].services[+el.dataset.s];
+    const f = el.dataset.f;
+    if (f==='name') el.oninput = () => { s().name = el.value; dirty(); };
+    if (f==='price') el.oninput = () => { el.value = el.value.replace(/\D/g,''); s().price = parseInt(el.value) || 0; dirty(); };
+    if (f==='dur') el.onchange = () => { s().dur = el.value==='days' ? 'days' : +el.value; dirty(); };
+    if (f==='hidden') el.onclick = () => { s().hidden = !s().hidden; S.dirty = true; priceView(v); };
+    if (f==='call') el.onclick = () => { s().call = !s().call; S.dirty = true; priceView(v); };
+    if (f==='del') el.onclick = () => { if (!confirm(`Удалить услугу «${s().name}»? Лучше просто скрыть, если она может вернуться.`)) return; ed[+el.dataset.c].services.splice(+el.dataset.s, 1); S.dirty = true; priceView(v); };
+  });
+  v.querySelectorAll('[data-addsvc]').forEach(b => b.onclick = () => { ed[+b.dataset.addsvc].services.push({name:'Новая услуга', price:0, dur:60, hidden:false}); S.dirty = true; priceView(v); });
+  $('#addCat').onclick = () => { ed.push({name:'Новый раздел', services:[{name:'Новая услуга', price:0, dur:60, hidden:false}]}); S.dirty = true; priceView(v); };
+  if (S.dirty) showSave();
+  function bindSave(){
+  $('#edUndo').onclick = () => { S.edit = null; S.dirty = false; S.editErr = ''; priceView(v); };
+  const sv = $('#edSave'); sv.onclick = async () => {
+    const cats = ed.filter(c => c.services.length).map(c => ({...c, name: c.name.trim(), services: c.services.map(s => ({...s, name: s.name.trim()}))}));
+    if (cats.some(c => !c.name || c.services.some(s => !s.name))){ S.editErr = 'У каждой услуги и раздела должно быть название.'; priceView(v); return; }
+    sv.disabled = true; sv.innerHTML = '<span class="spin"></span>';
+    const r = await api('/config', {method:'PUT', body:{categories:cats}});
+    if (!r.ok){ S.editErr = r.data.message || 'Не получилось сохранить. Проверьте интернет.'; priceView(v); return; }
+    S.cfg = r.data; S.edit = null; S.dirty = false; S.editErr = ''; priceView(v); toast('Цены сохранены — уже на странице записи');
+  };
+  }
+}
+
+// ---------- настройки ----------
+function setView(v){
+  const c = S.cfg;
+  const client = location.origin + location.pathname.replace(/owner\/?(index\.html)?$/, '');
+  const hours = JSON.parse(JSON.stringify(c.hours));
+  const ua = navigator.userAgent, ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  const doff = (c.daysOff||[]).filter(d => d >= today());
+  v.innerHTML = `<div style="height:12px"></div>
+    ${c.telegram_link ? `<div class="set"><h3>Уведомления в Telegram</h3><p>Нажмите кнопку — откроется Telegram. Там нажмите «Запустить». После этого о каждой новой записи будет приходить сообщение. Подключить можно несколько человек: каждому — нажать эту же кнопку.</p>
+      <a class="btn pri" href="${esc(c.telegram_link)}" target="_blank" rel="noopener" style="width:100%">${I.tg}Подключить Telegram</a></div>`
+      : DEMO ? `<div class="set"><h3>Уведомления в Telegram</h3><p>В рабочей версии здесь кнопка «Подключить Telegram»: одно нажатие, и о каждой новой записи приходит сообщение. Подключить можно несколько человек.</p></div>` : ''}
+    <div class="set"><div class="line"><div class="grow"><h3>Подтверждать записи вручную</h3><p style="margin:0">${c.confirm ? 'Включено: новая запись ждёт, пока вы её подтвердите.' : 'Выключено: клиент записывается сразу, время занимается автоматически.'}</p></div><button class="sw ${c.confirm?'on':''}" id="swConfirm" aria-label="Подтверждать вручную"></button></div></div>
+    <div class="set"><h3>Боксы</h3><p>Сколько машин можно обслуживать одновременно.</p><div class="stepper"><button id="bxMinus">−</button><b>${c.boxes}</b><button id="bxPlus">+</button></div></div>
+    <div class="set"><h3>Часы работы</h3><p>По ним клиенты видят свободное время.</p>
+      ${DOW_ORDER.map((d,i) => `<div class="hrow"><span class="dn">${DOW_ORDER_RU[i]}</span><button class="sw ${hours[d]?'on':''}" data-day="${d}"></button>
+        ${hours[d] ? `<select data-h="${d}" data-i="0">${timeOptions(toMin(hours[d][0]), 0, 23*60+30)}</select><span>–</span><select data-h="${d}" data-i="1">${timeOptions(toMin(hours[d][1]), 30, 24*60-30)}</select>` : `<span class="cl">выходной</span>`}</div>`).join('')}
+      <button class="btn pri" id="saveHours" style="width:100%;margin-top:12px" hidden>Сохранить часы работы</button></div>
+    <div class="set"><h3>Выходные и праздники</h3><p>В эти дни онлайн-запись закрыта.</p>
+      <div class="doff">${doff.length ? doff.map(d => `<span>${dateHuman(d)}<button data-rm="${d}" aria-label="Убрать">${I.close}</button></span>`).join('') : '<span class="small" style="background:none;border:0;padding:0">Пока нет</span>'}</div>
+      <div class="line"><select id="doffSel" class="grow" style="background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px">${dayOptions(addDays(today(),1))}</select><button class="btn" id="doffAdd" style="flex:0 0 auto;min-width:0">Добавить</button></div></div>
+    <div class="set"><h3>Страница записи для клиентов</h3><p>Эту ссылку можно ставить в Яндекс Картах, 2ГИС, ВКонтакте и Telegram.</p>
+      <div class="small" style="word-break:break-all;margin-bottom:10px">${esc(client)}</div>
+      <div class="line"><a class="btn" href="${esc(client)}" target="_blank" rel="noopener">Открыть</a><button class="btn" id="copyLink">Скопировать</button></div></div>
+    <div class="set"><h3>Кабинет на экране телефона</h3><p>Чтобы открывать кабинет одной кнопкой, как приложение:</p>
+      <ol class="howto">${ios ? '<li>Нажмите «Поделиться» (квадрат со стрелкой) внизу Safari.</li><li>Выберите «На экран Домой».</li><li>Нажмите «Добавить».</li>' : '<li>Нажмите три точки в правом верхнем углу браузера.</li><li>Выберите «Добавить на главный экран» или «Установить приложение».</li><li>Подтвердите.</li>'}</ol></div>
+    ${DEMO ? `<div class="set"><h3>Начать демо заново</h3><p>Вернуть исходное расписание и цены, как при первом открытии.</p><button class="btn" id="logout" style="width:100%">Сбросить демо</button></div>`
+      : `<div class="set"><h3>Выйти на этом телефоне</h3><p>Чтобы снова войти, понадобится личная ссылка.</p><button class="btn dan" id="logout" style="width:100%">Выйти</button></div>`}
+    <div class="hint" style="text-align:center;margin-bottom:20px">${esc(D.name)} · онлайн-запись</div>`;
+  const put = async (body, msg) => { const r = await api('/config', {method:'PUT', body}); if (!r.ok){ toast(r.data.message || 'Не получилось сохранить'); return false; } S.cfg = r.data; setView(v); toast(msg); return true; };
+  $('#swConfirm').onclick = () => put({confirm: !c.confirm}, !c.confirm ? 'Теперь записи ждут вашего подтверждения' : 'Клиенты снова записываются сразу');
+  $('#bxMinus').onclick = () => c.boxes > 1 && put({boxes: c.boxes - 1}, 'Боксов: ' + (c.boxes - 1));
+  $('#bxPlus').onclick = () => c.boxes < 20 && put({boxes: c.boxes + 1}, 'Боксов: ' + (c.boxes + 1));
+  const showSave = () => $('#saveHours').hidden = false;
+  v.querySelectorAll('[data-day]').forEach(b => b.onclick = () => {
+    const d = b.dataset.day; hours[d] = hours[d] ? null : ['09:00','21:00'];
+    const row = b.parentElement; b.classList.toggle('on', !!hours[d]);
+    row.querySelectorAll('select,span:not(.dn),.cl').forEach(x => x.remove());
+    if (hours[d]) row.insertAdjacentHTML('beforeend', `<select data-h="${d}" data-i="0">${timeOptions(540, 0, 23*60+30)}</select><span>–</span><select data-h="${d}" data-i="1">${timeOptions(1260, 30, 24*60-30)}</select>`);
+    else row.insertAdjacentHTML('beforeend', `<span class="cl">выходной</span>`);
+    row.querySelectorAll('select').forEach(bindHour); showSave();
+  });
+  function bindHour(sel){ sel.onchange = () => { hours[sel.dataset.h][+sel.dataset.i] = hm(+sel.value); showSave(); }; }
+  v.querySelectorAll('[data-h]').forEach(bindHour);
+  $('#saveHours').onclick = () => {
+    for (const d of DOW_ORDER) if (hours[d] && toMin(hours[d][0]) >= toMin(hours[d][1])){ toast('Время закрытия должно быть позже открытия'); return; }
+    put({hours}, 'Часы работы сохранены');
+  };
+  v.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => put({daysOff:(c.daysOff||[]).filter(x => x!==b.dataset.rm)}, 'Выходной убран'));
+  $('#doffAdd').onclick = () => { const d = $('#doffSel').value; if ((c.daysOff||[]).includes(d)) return toast('Этот день уже выходной');
+    const busy = S.data.bookings.filter(b => b.date===d && b.status!=='cancelled' && b.kind!=='block').length;
+    if (busy && !confirm(`На этот день уже ${busy} ${plural(busy,'запись','записи','записей')}. Они останутся — клиентам нужно будет позвонить. Сделать день выходным?`)) return;
+    put({daysOff:(c.daysOff||[]).concat(d)}, 'Выходной добавлен'); };
+  $('#copyLink').onclick = async () => { try{ await navigator.clipboard.writeText(client); toast('Ссылка скопирована'); }catch(e){ prompt('Скопируйте ссылку:', client); } };
+  $('#logout').onclick = () => { if (DEMO){ if (window.__zapisDemoReset) window.__zapisDemoReset(); location.reload(); return; }
+    if (!confirm('Выйти из кабинета на этом телефоне?')) return; try{ localStorage.removeItem(KEYK); }catch(e){} KEY = null; S.auth = false; render(); };
+}
+
+// ---------- окно снизу и всплывашки ----------
+function openSheet(title, body, foot){
+  $('#sheet').innerHTML = `<div class="sh-head"><h2>${title}</h2><button class="icon-btn" id="shClose" aria-label="Закрыть">${I.close}</button></div><div class="sh-body">${body}</div>${foot ? `<div class="sh-foot">${foot}</div>` : ''}`;
+  $('#sheet').classList.add('on'); $('#sheetBg').classList.add('on'); document.body.style.overflow = 'hidden';
+  $('#shClose').onclick = closeSheet;
+}
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#sheetBg').classList.remove('on'); document.body.style.overflow = ''; }
+$('#sheetBg').onclick = closeSheet;
+function toast(m, ms=2600, cls=''){ const t = $('#toast'); t.textContent = m; t.className = 'toast on ' + cls; clearTimeout(t._h); t._h = setTimeout(() => t.className = 'toast', ms); }
+
+// ---------- старт ----------
+render();
+if (S.auth){
+  (async () => { const ok = await loadCfg(); if (!ok && S.auth){ S.online = false; } await load(); })();
+  setInterval(() => { if (!document.hidden && S.auth) load(); }, 20000);
+  setInterval(() => { if (!document.hidden && S.auth && !S.dirty) loadCfg(); }, 300000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && S.auth){ load(); } });
+  window.addEventListener('online', () => S.auth && load());
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>

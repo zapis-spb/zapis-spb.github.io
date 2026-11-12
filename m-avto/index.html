@@ -217,7 +217,9 @@ body{background:
   radial-gradient(90% 45% at 105% 55%, color-mix(in srgb,var(--accent) 8%,transparent) 0%, transparent 70%),
   radial-gradient(80% 40% at -10% 85%, color-mix(in srgb,var(--accent) 6%,transparent) 0%, transparent 70%),
   var(--bg);background-attachment:fixed}
-.demo-bar{background:color-mix(in srgb,var(--accent) 14%,#14171C);border-bottom-color:color-mix(in srgb,var(--accent) 25%,var(--line));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demo-bar{background:color-mix(in srgb,var(--accent) 14%,#14171C);border-bottom-color:color-mix(in srgb,var(--accent) 25%,var(--line));display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left}
+.demo-bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.demo-bar a{flex:0 0 auto;color:var(--text);font-weight:700;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--accent) 30%,transparent)}
 /* текст на фото читается при любой картинке */
 .hero::after{background:linear-gradient(180deg,rgba(14,16,20,.28) 0%,rgba(14,16,20,0) 28%,rgba(14,16,20,.5) 58%,rgba(14,16,20,.97) 100%)}
 .kind{display:inline-block;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 30%,rgba(10,12,16,.55));color:#fff;letter-spacing:.06em;font-size:11px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -249,7 +251,337 @@ h1,.meta{text-shadow:0 2px 14px rgba(0,0,0,.55)}
 <div class="toast" id="toast"></div>
 
 <script>
-const DATA = {"slug": "m-avto", "name": "М-Авто", "kind": "Автомойка и автосервис", "address": "Санкт-Петербург, 16-я линия В.О., 81", "district": "Василеостровский район", "mapsUrl": "https://yandex.ru/maps/org/m_avto/43045824344/", "phones": [{"value": "+79650659900", "label": "Запись"}, {"value": "+79939659900", "label": "Доп. номер"}], "telegram": "https://t.me/+79117068114", "vk": "", "rating": 4.7, "reviews": 257, "hours": {"mon": ["09:00", "21:00"], "tue": ["09:00", "21:00"], "wed": ["09:00", "21:00"], "thu": ["09:00", "21:00"], "fri": ["09:00", "21:00"], "sat": ["09:00", "21:00"], "sun": ["09:00", "21:00"]}, "boxes": 2, "accent": "#F76B15", "photos": ["https://avatars.mds.yandex.net/get-altay/5517178/2a00000180bd73f7b1056357b8243ea2eeba/XXL", "https://avatars.mds.yandex.net/get-altay/218662/2a00000186f5bc0c7cc1ca4fe66e6a9326ee/XXL", "https://avatars.mds.yandex.net/get-altay/7734890/2a000001871aa1b28391b3788b54ca247030/XXL", "https://avatars.mds.yandex.net/get-altay/11004775/2a0000018ce379a068cf93c809c64f56b373/XXL", "https://avatars.mds.yandex.net/get-altay/19300673/2a0000019df7a7ac746b95f8769ee134c51e/XXL", "https://avatars.mds.yandex.net/get-altay/5098810/2a0000018281d5ebdc7b4d7d490028a6b79f/XXL", "https://avatars.mds.yandex.net/get-altay/5102477/2a00000180bd742d935607b80b9160948ce2/XXL", "https://avatars.mds.yandex.net/get-altay/19785895/2a0000019df7a50203b70477bb5105a4ece3/XXL"], "pricesSource": "Яндекс Карты, прайс организации", "categories": [{"name": "Мойка", "services": [{"name": "Технологическая мойка (облив водой)", "price": 300, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}, {"name": "Мойка кузова «Стандарт»", "price": 650, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 60}, {"name": "Мойка «Люкс» без багажника", "price": 1300, "desc": "1 кат 1300 р, 2 кат 1400 р, 3 кат 1600 р, 4 кат 1800 р", "dur": 90}, {"name": "Мойка «Экстра люкс»", "price": 1450, "desc": "Мойка кузова + коврики, Пылесос всего салона, Влажна уборка салона + пластика, Чернение резины", "dur": 90}, {"name": "Мойка «Премиум»", "price": 2400, "desc": "Мойка кузова + коврики, Обезжиривание кузова, Покрытие воском кузова, Уборка салона пылесосом, Влажная уборка…", "dur": 120}, {"name": "Мойка радиатора", "price": 500, "from": true, "dur": 60}, {"name": "Мойка арок", "price": 200, "from": true, "dur": 30}, {"name": "Мойка мотоцикла", "price": 600, "from": true, "dur": 60}, {"name": "Мойка двигателя", "price": 500, "from": true, "dur": 45}, {"name": "Мойка ковриков", "price": 100, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}, {"name": "Мойка лобового стекла", "price": 100, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}, {"name": "Удаление металлических вкраплений с кузова", "price": 2000, "dur": 45}, {"name": "Обработка замков WD-40", "price": 200, "dur": 30}, {"name": "Обезжиривание кузова", "price": 350, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}, {"name": "Чистка дисков спецхимией", "price": 300, "dur": 30}, {"name": "Чернение шин", "price": 150, "dur": 30}, {"name": "Уборка пылесосом багажника", "price": 250, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}, {"name": "Очистка стекла", "price": 150, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}, {"name": "Влажная уборка салона", "price": 200, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 60}, {"name": "Глубокая очистка дисков с кислотой", "price": 250, "dur": 30}, {"name": "Уборка салона пылесосом", "price": 300, "desc": "1 кат 300 р, 2 кат 350 р, 3 кат 400 р, 4 кат 600 р", "dur": 60}, {"name": "Турбосушка", "price": 300, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 30}]}, {"name": "Химчистка", "services": [{"name": "Химчистка салона", "price": 7000, "from": true, "dur": 480}, {"name": "Химчистка одного ковра", "price": 500, "from": true, "dur": 60}, {"name": "Химчистка потолка", "price": 2000, "from": true, "dur": 120}, {"name": "Химчистка пола", "price": 2000, "from": true, "dur": 120}, {"name": "Частичная химчистка салона", "price": 5000, "desc": "Цена для легковых, для крупных автомобилей — выше", "from": true, "dur": 60}, {"name": "Полная химчистка авто", "price": 8000, "from": true, "dur": 480}]}, {"name": "Полировка и покрытия", "services": [{"name": "Антидождь на 3 стекла", "price": 1600, "from": true, "dur": 30}, {"name": "Кварцевое покрытие кузова", "price": 3300, "desc": "1 КАТ 3300 Р, 2 КАТ 3800 Р, 3 КАТ 4300 Р, 4 КАТ 5000 Р", "dur": 90}, {"name": "Полировка авто", "price": 6000, "from": true, "dur": "days"}, {"name": "Антидождь на стёкла", "price": 1000, "dur": 30}, {"name": "Полировка фар", "price": 500, "from": true, "dur": 90}, {"name": "Нанесение кварцевого покрытия", "price": 2000, "from": true, "dur": 90}, {"name": "Полная полировка авто", "price": 7000, "dur": "days"}]}, {"name": "Ремонт и ТО", "services": [{"name": "Замена габаритной лампы", "price": 150, "from": true, "dur": 30}, {"name": "Замена тормозного диска переднего", "price": 1000, "from": true, "dur": 90}, {"name": "Замена тормозных колодок (передних)", "price": 1000, "dur": 90}, {"name": "Замена подшипника переднего", "price": 3000, "from": true, "dur": 90}, {"name": "Замена подшипника заднего", "price": 2000, "from": true, "dur": 90}, {"name": "Ремонт рулевой рейки", "price": 12000, "dur": "days"}, {"name": "Снятие и установка рулевой рейки", "price": 4000, "dur": "days"}, {"name": "Замена стоек стабилизатора передних", "price": 850, "from": true, "dur": 90}, {"name": "Замена амортизатора переднего", "price": 2500, "from": true, "dur": 90}, {"name": "Замена заднего амортизатора", "price": 1500, "from": true, "dur": 90}, {"name": "Замена лампы ближнего света", "price": 250, "from": true, "dur": 30}, {"name": "Замена гофры глушителя", "price": 3000, "from": true, "dur": 90}, {"name": "Замена цепи ГРМ", "price": 8000, "dur": "days"}, {"name": "Замена лампы дальнего света", "price": 250, "from": true, "dur": 30}]}, {"name": "Кузовной ремонт", "services": [{"name": "Арматурные работы", "price": 1500, "from": true, "dur": "days"}, {"name": "Сварочные работы", "price": 1500, "from": true, "dur": "days"}, {"name": "Снятие и установка крыла", "price": 1800, "from": true, "dur": 90}, {"name": "Снятие и установка капота", "price": 3000, "from": true, "dur": 90}, {"name": "Снятие и установка двери", "price": 4500, "from": true, "dur": 90}, {"name": "Ремонт арок автомобиля", "price": 7000, "dur": "days"}, {"name": "Антикоррозийная обработка днища (арок) автомобиля", "price": 10000, "from": true, "dur": "days"}, {"name": "Рихтовка одного элемента", "price": 7500, "from": true, "dur": "days"}, {"name": "Ремонт бампера", "price": 2000, "from": true, "dur": "days"}, {"name": "Снятие и установка бампера", "price": 3000, "from": true, "dur": 90}, {"name": "Покраска одного элемента", "price": 9000, "from": true, "dur": "days"}, {"name": "Полная покраска авто", "price": 80000, "from": true, "dur": "days"}, {"name": "Снятие и установка крышки багажника", "price": 4000, "from": true, "dur": 90}, {"name": "Замена и ремонт порогов автомобиля", "price": 9500, "desc": "В зависимости от автомобиля от 5000р. до 20500р.", "from": true, "dur": "days"}]}]};
+// Демо-сервер внутри браузера: отвечает на те же запросы /api/<мойка>/..., что настоящий server/app.py.
+// Встраивается только в демо-сборку (build.py без --live). Данные лежат в localStorage этого браузера,
+// поэтому страница записи и кабинет владельца видят одни и те же записи. Логика повторяет app.py:
+// если меняется сервер — меняем и здесь (проверяет scratchpad/demo_e2e.mjs).
+(() => {
+const SLUG = "m-avto", CFG0 = {"slug": "m-avto", "name": "М-Авто", "kind": "Автомойка и автосервис", "address": "Санкт-Петербург, 16-я линия В.О., 81", "district": "Василеостровский район", "mapsUrl": "https://yandex.ru/maps/org/m_avto/43045824344/", "phones": [{"value": "+79650659900", "label": "Запись"}, {"value": "+79939659900", "label": "Доп. номер"}], "telegram": "https://t.me/+79117068114", "vk": "", "rating": 4.7, "reviews": 257, "hours": {"mon": ["09:00", "21:00"], "tue": ["09:00", "21:00"], "wed": ["09:00", "21:00"], "thu": ["09:00", "21:00"], "fri": ["09:00", "21:00"], "sat": ["09:00", "21:00"], "sun": ["09:00", "21:00"]}, "boxes": 2, "accent": "#F76B15", "photos": ["https://avatars.mds.yandex.net/get-altay/5517178/2a00000180bd73f7b1056357b8243ea2eeba/XXL", "https://avatars.mds.yandex.net/get-altay/218662/2a00000186f5bc0c7cc1ca4fe66e6a9326ee/XXL", "https://avatars.mds.yandex.net/get-altay/7734890/2a000001871aa1b28391b3788b54ca247030/XXL", "https://avatars.mds.yandex.net/get-altay/11004775/2a0000018ce379a068cf93c809c64f56b373/XXL", "https://avatars.mds.yandex.net/get-altay/19300673/2a0000019df7a7ac746b95f8769ee134c51e/XXL", "https://avatars.mds.yandex.net/get-altay/5098810/2a0000018281d5ebdc7b4d7d490028a6b79f/XXL", "https://avatars.mds.yandex.net/get-altay/5102477/2a00000180bd742d935607b80b9160948ce2/XXL", "https://avatars.mds.yandex.net/get-altay/19785895/2a0000019df7a50203b70477bb5105a4ece3/XXL"], "pricesSource": "Яндекс Карты, прайс организации", "categories": [{"name": "Мойка", "services": [{"id": "0-0", "name": "Технологическая мойка (облив водой)", "price": 300, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-1", "name": "Мойка кузова «Стандарт»", "price": 650, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "0-2", "name": "Мойка «Люкс» без багажника", "price": 1300, "from": false, "desc": "1 кат 1300 р, 2 кат 1400 р, 3 кат 1600 р, 4 кат 1800 р", "dur": 90, "hidden": false, "call": false}, {"id": "0-3", "name": "Мойка «Экстра люкс»", "price": 1450, "from": false, "desc": "Мойка кузова + коврики, Пылесос всего салона, Влажна уборка салона + пластика, Чернение резины", "dur": 90, "hidden": false, "call": false}, {"id": "0-4", "name": "Мойка «Премиум»", "price": 2400, "from": false, "desc": "Мойка кузова + коврики, Обезжиривание кузова, Покрытие воском кузова, Уборка салона пылесосом, Влажная уборка…", "dur": 120, "hidden": false, "call": false}, {"id": "0-5", "name": "Мойка радиатора", "price": 500, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "0-6", "name": "Мойка арок", "price": 200, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-7", "name": "Мойка мотоцикла", "price": 600, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "0-8", "name": "Мойка двигателя", "price": 500, "from": true, "desc": "", "dur": 45, "hidden": false, "call": false}, {"id": "0-9", "name": "Мойка ковриков", "price": 100, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-10", "name": "Мойка лобового стекла", "price": 100, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-11", "name": "Удаление металлических вкраплений с кузова", "price": 2000, "from": false, "desc": "", "dur": 45, "hidden": false, "call": false}, {"id": "0-12", "name": "Обработка замков WD-40", "price": 200, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-13", "name": "Обезжиривание кузова", "price": 350, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-14", "name": "Чистка дисков спецхимией", "price": 300, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-15", "name": "Чернение шин", "price": 150, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-16", "name": "Уборка пылесосом багажника", "price": 250, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-17", "name": "Очистка стекла", "price": 150, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-18", "name": "Влажная уборка салона", "price": 200, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "0-19", "name": "Глубокая очистка дисков с кислотой", "price": 250, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-20", "name": "Уборка салона пылесосом", "price": 300, "from": false, "desc": "1 кат 300 р, 2 кат 350 р, 3 кат 400 р, 4 кат 600 р", "dur": 60, "hidden": false, "call": false}, {"id": "0-21", "name": "Турбосушка", "price": 300, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}]}, {"name": "Химчистка", "services": [{"id": "1-0", "name": "Химчистка салона", "price": 7000, "from": true, "desc": "", "dur": 480, "hidden": false, "call": false}, {"id": "1-1", "name": "Химчистка одного ковра", "price": 500, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "1-2", "name": "Химчистка потолка", "price": 2000, "from": true, "desc": "", "dur": 120, "hidden": false, "call": false}, {"id": "1-3", "name": "Химчистка пола", "price": 2000, "from": true, "desc": "", "dur": 120, "hidden": false, "call": false}, {"id": "1-4", "name": "Частичная химчистка салона", "price": 5000, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "1-5", "name": "Полная химчистка авто", "price": 8000, "from": true, "desc": "", "dur": 480, "hidden": false, "call": false}]}, {"name": "Полировка и покрытия", "services": [{"id": "2-0", "name": "Антидождь на 3 стекла", "price": 1600, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "2-1", "name": "Кварцевое покрытие кузова", "price": 3300, "from": false, "desc": "1 КАТ 3300 Р, 2 КАТ 3800 Р, 3 КАТ 4300 Р, 4 КАТ 5000 Р", "dur": 90, "hidden": false, "call": false}, {"id": "2-2", "name": "Полировка авто", "price": 6000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "2-3", "name": "Антидождь на стёкла", "price": 1000, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "2-4", "name": "Полировка фар", "price": 500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "2-5", "name": "Нанесение кварцевого покрытия", "price": 2000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "2-6", "name": "Полная полировка авто", "price": 7000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}]}, {"name": "Ремонт и ТО", "services": [{"id": "3-0", "name": "Замена габаритной лампы", "price": 150, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "3-1", "name": "Замена тормозного диска переднего", "price": 1000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-2", "name": "Замена тормозных колодок (передних)", "price": 1000, "from": false, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-3", "name": "Замена подшипника переднего", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-4", "name": "Замена подшипника заднего", "price": 2000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-5", "name": "Ремонт рулевой рейки", "price": 12000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-6", "name": "Снятие и установка рулевой рейки", "price": 4000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-7", "name": "Замена стоек стабилизатора передних", "price": 850, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-8", "name": "Замена амортизатора переднего", "price": 2500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-9", "name": "Замена заднего амортизатора", "price": 1500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-10", "name": "Замена лампы ближнего света", "price": 250, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "3-11", "name": "Замена гофры глушителя", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-12", "name": "Замена цепи ГРМ", "price": 8000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-13", "name": "Замена лампы дальнего света", "price": 250, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}]}, {"name": "Кузовной ремонт", "services": [{"id": "4-0", "name": "Арматурные работы", "price": 1500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-1", "name": "Сварочные работы", "price": 1500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-2", "name": "Снятие и установка крыла", "price": 1800, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-3", "name": "Снятие и установка капота", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-4", "name": "Снятие и установка двери", "price": 4500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-5", "name": "Ремонт арок автомобиля", "price": 7000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-6", "name": "Антикоррозийная обработка днища (арок) автомобиля", "price": 10000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-7", "name": "Рихтовка одного элемента", "price": 7500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-8", "name": "Ремонт бампера", "price": 2000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-9", "name": "Снятие и установка бампера", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-10", "name": "Покраска одного элемента", "price": 9000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-11", "name": "Полная покраска авто", "price": 80000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-12", "name": "Снятие и установка крышки багажника", "price": 4000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-13", "name": "Замена и ремонт порогов автомобиля", "price": 9500, "from": true, "desc": "В зависимости от автомобиля от 5000р. до 20500р.", "dur": "days", "hidden": false, "call": false}]}], "confirm": false, "daysOff": []}, VER = "9121f18f";
+if (!CFG0) return;
+const STEP = 30, LEAD = 30, HORIZON = 30, AVAIL = 14, MAX_ACTIVE = 3;
+const DOWS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const SKEY = 'zdemo_' + SLUG + '_' + VER;
+
+// ---------- время: как на сервере, по Москве ----------
+function nowMsk() {
+  const t = new Date(Date.now() + 3 * 3600e3);
+  return { date: t.toISOString().slice(0, 10), min: t.getUTCHours() * 60 + t.getUTCMinutes(),
+           iso: t.toISOString().slice(0, 19) + '+03:00' };
+}
+const addDays = (k, n) => { const d = new Date(k + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const dow = k => DOWS[new Date(k + 'T12:00:00Z').getUTCDay()];
+const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+const hm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/, TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+class ApiError { constructor(status, error, message = '') { this.status = status; this.error = error; this.message = message; } }
+const clone = o => JSON.parse(JSON.stringify(o));
+
+// ---------- хранилище ----------
+let MEM = null, STORAGE = true;
+function load() {
+  if (MEM) return MEM;
+  try { const s = localStorage.getItem(SKEY); if (s) MEM = JSON.parse(s); } catch (e) { STORAGE = false; }
+  if (!MEM) { const s = seedState(clone(CFG0), 1); MEM = { cfg: s.cfg, bookings: s.bookings, next: s.next, seedDate: nowMsk().date }; save(); }
+  // демо открыли в другой день: обновляем показательное расписание, записи и настройки посетителя сохраняем
+  if (MEM.seedDate !== nowMsk().date) {
+    const mine = MEM.bookings.filter(b => b.u), s = seedState(MEM.cfg, MEM.next);
+    MEM.bookings = s.bookings.concat(mine); MEM.next = s.next; MEM.seedDate = nowMsk().date; save();
+  }
+  return MEM;
+}
+function save() { try { localStorage.setItem(SKEY, JSON.stringify(MEM)); } catch (e) { STORAGE = false; } }
+// другая вкладка (кабинет или страница записи) могла поменять данные
+window.addEventListener('storage', e => { if (e.key === SKEY) MEM = null; });
+function fresh() { if (STORAGE) MEM = null; return load(); }
+
+// ---------- расписание ----------
+function dayHours(cfg, k) {
+  if ((cfg.daysOff || []).includes(k)) return null;
+  const h = cfg.hours[dow(k)];
+  return h ? [toMin(h[0]), toMin(h[1])] : null;
+}
+const occupied = (st, k, excl) => st.bookings.filter(b => b.date === k && b.status !== 'cancelled' && b.start != null && b.dur != null && b.id !== excl);
+const boxFree = (occ, box, t, dur) => occ.every(r => !((r.box == null || r.box === box) && t < r.start + r.dur && r.start < t + dur));
+function freeSlots(cfg, occ, k, dur, now) {
+  const hh = dayHours(cfg, k);
+  if (!hh || k < now.date) return [];
+  const minT = k === now.date ? now.min + LEAD : -1, out = [];
+  for (let t = hh[0]; t <= hh[1] - dur; t += STEP) {
+    if (t < minT) continue;
+    for (let b = 0; b < cfg.boxes; b++) if (boxFree(occ, b, t, dur)) { out.push({ t, box: b }); break; }
+  }
+  return out;
+}
+function pick(cfg, ids, byOwner = false) {
+  if (!Array.isArray(ids) || !ids.length || ids.length > 20 || new Set(ids.map(String)).size !== ids.length)
+    throw new ApiError(400, 'bad_services', 'Выберите услуги');
+  const idx = {}; cfg.categories.forEach(c => c.services.forEach(s => { idx[s.id] = s; }));
+  const items = ids.map(i => {
+    const s = idx[i];
+    if (!s || s.hidden) throw new ApiError(409, 'service_changed', 'Услуга изменилась. Обновите страницу.');
+    if (s.call && !byOwner) throw new ApiError(409, 'call_only', `На «${s.name}» записываем по телефону.`);
+    return s;
+  });
+  const total = items.reduce((a, s) => a + s.price, 0);
+  const dur = items.some(s => s.dur === 'days') ? 'days' : Math.ceil(items.reduce((a, s) => a + s.dur, 0) / STEP) * STEP;
+  return { items, total, dur };
+}
+const snap = items => items.map(s => ({ id: s.id, name: s.name, price: s.price, from: !!s.from }));
+
+// ---------- проверки полей ----------
+function clean(v, max, field, required = false) {
+  if (v == null) v = '';
+  if (typeof v !== 'string') throw new ApiError(400, 'bad_' + field);
+  v = v.replace(/[\x00-\x09\x0b-\x1f\x7f]/g, ' ').trim();
+  if (v.length > max) throw new ApiError(400, 'bad_' + field, 'Слишком длинно: ' + field);
+  if (required && !v) throw new ApiError(400, 'bad_' + field, 'Не заполнено: ' + field);
+  return v;
+}
+function normPhone(v, required = true) {
+  if (!v && !required) return '';
+  let d = String(v || '').replace(/\D/g, '');
+  if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1);
+  if (d.length === 10 && d[0] === '9') d = '7' + d;
+  if (d.length !== 11 || d[0] !== '7') throw new ApiError(400, 'bad_phone', 'Проверьте номер телефона');
+  return `+7 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9, 11)}`;
+}
+const isInt = v => typeof v === 'number' && Number.isInteger(v);
+function checkDate(s) { if (typeof s !== 'string' || !DATE_RE.test(s)) throw new ApiError(400, 'bad_date'); return s; }
+const token = () => Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+const pubBooking = (b, withToken) => Object.assign({ id: b.id, status: b.status, request: b.kind === 'request', date: b.date,
+  start: b.start, dur: b.dur, services: b.services, total: b.total }, withToken ? { token: b.token } : {});
+function publicConfig(cfg) {
+  const out = clone(cfg);
+  out.categories = out.categories.map(c => ({ name: c.name, services: c.services.filter(s => !s.hidden) })).filter(c => c.services.length);
+  return out;
+}
+
+// ---------- запросы ----------
+function handle(method, path, q, body) {
+  const st = fresh(), cfg = st.cfg, now = nowMsk();
+  let m;
+  if (method === 'GET' && path === 'config') return publicConfig(cfg);
+  if (method === 'GET' && path === 'availability') {
+    const ids = (q.get('services') || '').split(',').filter(Boolean);
+    const { total, dur } = pick(cfg, ids);
+    const start = q.get('from') ? checkDate(q.get('from')) : now.date;
+    const days = Math.max(1, Math.min(parseInt(q.get('days')) || AVAIL, HORIZON));
+    const out = [];
+    for (let i = 0; i < days; i++) {
+      const k = addDays(start, i);
+      if (k < now.date || k > addDays(now.date, HORIZON)) continue;
+      const hh = dayHours(cfg, k);
+      if (dur === 'days') { out.push({ date: k, open: !!hh, times: [] }); continue; }
+      out.push({ date: k, open: !!hh, hours: hh ? [hm(hh[0]), hm(hh[1])] : null,
+                 times: hh ? freeSlots(cfg, occupied(st, k), k, dur, now).map(s => s.t) : [] });
+    }
+    return { dur, total, request: dur === 'days', days: out, now: now.iso.slice(0, 16) + '+03:00' };
+  }
+  if (method === 'POST' && path === 'bookings') {
+    if (body.website) throw new ApiError(400, 'bad_request');
+    const { items, total, dur } = pick(cfg, body.services);
+    const d = checkDate(body.date);
+    if (d < now.date || d > addDays(now.date, HORIZON)) throw new ApiError(400, 'bad_date', 'Выберите другой день');
+    const name = clean(body.name, 60, 'name', true);
+    if (name.length < 2) throw new ApiError(400, 'bad_name', 'Укажите имя');
+    const phone = normPhone(body.phone), car = clean(body.car, 80, 'car'), comment = clean(body.comment, 500, 'comment');
+    const request = dur === 'days';
+    if (!dayHours(cfg, d)) throw new ApiError(409, 'day_closed', 'В этот день мойка не работает');
+    let start = null, box = null;
+    if (body.idem) { const prev = st.bookings.find(b => b.idem === body.idem); if (prev) return pubBooking(prev, true); }
+    const active = st.bookings.filter(b => b.phone === phone && ['new', 'confirmed'].includes(b.status) && b.date >= now.date && ['online', 'request'].includes(b.kind)).length;
+    if (active >= MAX_ACTIVE) throw new ApiError(429, 'too_many_active', 'У вас уже есть несколько записей. Позвоните нам, пожалуйста.');
+    if (!request) {
+      start = body.start;
+      if (!isInt(start)) throw new ApiError(400, 'bad_start', 'Выберите время');
+      const ok = freeSlots(cfg, occupied(st, d), d, dur, now).find(s => s.t === start);
+      if (!ok) throw new ApiError(409, 'slot_taken', 'Это время только что заняли. Выберите другое.');
+      box = ok.box;
+    }
+    const b = { id: st.next++, kind: request ? 'request' : 'online', status: request || cfg.confirm ? 'new' : 'confirmed',
+      date: d, start, dur: request ? null : dur, box, services: snap(items), total, name, phone, car, comment,
+      token: token(), idem: body.idem || null, seen: 0, u: 1, created_at: now.iso, updated_at: now.iso };
+    st.bookings.push(b); save();
+    return pubBooking(b, true);
+  }
+  if ((m = path.match(/^bookings\/(\d+)$/)) && method === 'GET') {
+    const b = st.bookings.find(x => x.id === +m[1]);
+    if (!b || b.token !== q.get('token')) throw new ApiError(404, 'not_found', 'Запись не найдена');
+    return pubBooking(b);
+  }
+  if ((m = path.match(/^bookings\/(\d+)\/cancel$/)) && method === 'POST') {
+    const b = st.bookings.find(x => x.id === +m[1]);
+    if (!b || b.token !== body.token) throw new ApiError(404, 'not_found', 'Запись не найдена');
+    if (b.status === 'cancelled') return pubBooking(b);
+    if (!['new', 'confirmed'].includes(b.status)) throw new ApiError(409, 'cannot_cancel', 'Эту запись уже нельзя отменить');
+    if (b.start != null && (b.date < now.date || (b.date === now.date && b.start <= now.min))) throw new ApiError(409, 'cannot_cancel', 'Время записи уже прошло');
+    b.status = 'cancelled'; b.seen = 0; b.updated_at = now.iso; save();
+    return pubBooking(b);
+  }
+  // --- кабинет владельца (в демо вход без ключа)
+  if (path === 'owner/bookings' && method === 'GET') {
+    const frm = q.get('from') ? checkDate(q.get('from')) : addDays(now.date, -1);
+    const to = q.get('to') ? checkDate(q.get('to')) : addDays(now.date, 14);
+    const rows = st.bookings.filter(b => b.date >= frm && b.date <= to)
+      .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.start ?? 9999) - (b.start ?? 9999));
+    const reqs = st.bookings.filter(b => b.kind === 'request' && b.status === 'new' && b.start == null).sort((a, b) => a.date < b.date ? -1 : 1);
+    return { bookings: rows.map(ownerView), requests: reqs.map(ownerView),
+             unseen: st.bookings.filter(b => !b.seen && ['online', 'request'].includes(b.kind)).length, now: now.iso };
+  }
+  if (path === 'owner/bookings' && method === 'POST') {
+    const kind = body.kind;
+    if (!['manual', 'block'].includes(kind)) throw new ApiError(400, 'bad_kind');
+    const d = checkDate(body.date), { start, dur } = body, box = body.box ?? null;
+    if (!isInt(start) || start < 0 || start >= 1440 || !isInt(dur) || dur < 15 || dur > 1440 || start + dur > 1440) throw new ApiError(400, 'bad_time', 'Проверьте время');
+    if (box !== null && (!isInt(box) || box < 0 || box >= cfg.boxes)) throw new ApiError(400, 'bad_box');
+    if (kind === 'manual' && box === null) throw new ApiError(400, 'bad_box', 'Выберите бокс');
+    let services = [], total = 0;
+    if (body.services && body.services.length) { const p = pick(cfg, body.services, true); services = snap(p.items); total = p.total; }
+    if (isInt(body.total) && body.total >= 0) total = body.total;
+    const occ = occupied(st, d), boxes = box === null ? [...Array(cfg.boxes).keys()] : [box];
+    if (boxes.some(x => !boxFree(occ, x, start, dur)) && !body.force) throw new ApiError(409, 'overlap', 'На это время уже есть запись');
+    const b = { id: st.next++, kind, status: 'confirmed', date: d, start, dur, box, services, total,
+      name: clean(body.name, 60, 'name'), phone: normPhone(body.phone, false), car: clean(body.car, 80, 'car'),
+      comment: clean(body.comment, 500, 'comment'), token: token(), seen: 1, u: 1, created_at: now.iso, updated_at: now.iso };
+    st.bookings.push(b); save();
+    return ownerView(b);
+  }
+  if ((m = path.match(/^owner\/bookings\/(\d+)$/)) && method === 'PATCH') {
+    const b = st.bookings.find(x => x.id === +m[1]);
+    if (!b) throw new ApiError(404, 'not_found');
+    const sets = {};
+    if ('status' in body) {
+      if (!['new', 'confirmed', 'done', 'noshow', 'cancelled'].includes(body.status)) throw new ApiError(400, 'bad_status');
+      sets.status = body.status;
+    }
+    if (['date', 'start', 'dur', 'box'].some(k => k in body)) {
+      const d = checkDate(body.date ?? b.date), start = body.start ?? b.start, dur = body.dur ?? b.dur;
+      const box = 'box' in body ? body.box : b.box;
+      if (!isInt(start) || start < 0 || start >= 1440 || !isInt(dur) || dur < 15 || dur > 1440 || start + dur > 1440) throw new ApiError(400, 'bad_time', 'Проверьте время');
+      if (box !== null && (!isInt(box) || box < 0 || box >= cfg.boxes)) throw new ApiError(400, 'bad_box');
+      if (box === null && b.kind !== 'block') throw new ApiError(400, 'bad_box', 'Выберите бокс');
+      const occ = occupied(st, d, b.id), boxes = box === null ? [...Array(cfg.boxes).keys()] : [box];
+      if (boxes.some(x => !boxFree(occ, x, start, dur)) && !body.force) throw new ApiError(409, 'overlap', 'На это время уже есть запись');
+      Object.assign(sets, { date: d, start, dur, box });
+    }
+    for (const [f, ml] of [['name', 60], ['car', 80], ['comment', 500]]) if (f in body) sets[f] = clean(body[f], ml, f);
+    if ('phone' in body) sets.phone = normPhone(body.phone, false);
+    if ('total' in body) { if (!isInt(body.total) || body.total < 0) throw new ApiError(400, 'bad_total'); sets.total = body.total; }
+    if (!Object.keys(sets).length) throw new ApiError(400, 'nothing_to_change');
+    Object.assign(b, sets, { seen: 1, updated_at: now.iso }); save();
+    return ownerView(b);
+  }
+  if (path === 'owner/seen' && method === 'POST') {
+    (body.ids || []).forEach(id => { const b = st.bookings.find(x => x.id === id); if (b) b.seen = 1; });
+    save(); return { ok: true };
+  }
+  if (path === 'owner/config' && method === 'GET') return Object.assign(clone(cfg), { telegram_link: '' });
+  if (path === 'owner/config' && method === 'PUT') {
+    if ('hours' in body) {
+      const h = {};
+      for (const [k, v] of Object.entries(body.hours || {})) {
+        if (!DOWS.includes(k)) throw new ApiError(400, 'bad_hours');
+        if (v == null) continue;
+        if (!Array.isArray(v) || v.length !== 2 || !TIME_RE.test(v[0]) || !TIME_RE.test(v[1]) || toMin(v[0]) >= toMin(v[1])) throw new ApiError(400, 'bad_hours', 'Проверьте часы работы');
+        h[k] = v;
+      }
+      cfg.hours = h;
+    }
+    if ('boxes' in body) { if (!isInt(body.boxes) || body.boxes < 1 || body.boxes > 20) throw new ApiError(400, 'bad_boxes'); cfg.boxes = body.boxes; }
+    if ('categories' in body) {
+      const seen = new Set();
+      cfg.categories = (body.categories || []).map(c => ({ name: clean(c.name, 60, 'category', true), services: (c.services || []).map(s => {
+        let id = s.id; if (!id || seen.has(id)) id = 's' + Math.random().toString(16).slice(2, 10); seen.add(id);
+        if (!isInt(s.price) || s.price < 0 || s.price > 1e6) throw new ApiError(400, 'bad_price', 'Неверная цена: ' + s.name);
+        return { id, name: clean(s.name, 100, 'service', true), price: s.price, from: !!s.from, desc: clean(s.desc, 400, 'desc'),
+                 dur: s.dur === 'days' ? 'days' : (isInt(s.dur) && s.dur > 0 ? s.dur : 60), hidden: !!s.hidden, call: !!s.call };
+      }) }));
+    }
+    if ('confirm' in body) cfg.confirm = !!body.confirm;
+    if ('daysOff' in body) cfg.daysOff = [...new Set((body.daysOff || []).filter(x => DATE_RE.test(x)))].sort();
+    if ('phones' in body) cfg.phones = (body.phones || []).map(p => ({ value: '+' + normPhone(p.value).replace(/\D/g, ''), label: clean(p.label, 30, 'label') }));
+    cfg._version = now.iso + '.' + Math.random().toString(16).slice(2, 6);
+    save();
+    return Object.assign(clone(cfg), { telegram_link: '' });
+  }
+  throw new ApiError(404, 'not_found', 'Нет такого адреса');
+}
+
+// ---------- живое расписание для показа ----------
+function rng(seedStr) {
+  let h = 1779033703 ^ seedStr.length;
+  for (let i = 0; i < seedStr.length; i++) { h = Math.imul(h ^ seedStr.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+  return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; };
+}
+function seedState(cfg, startId) {
+  const now = nowMsk(), r = rng(SLUG + VER + now.date), B = [];
+  let id = startId;
+  const pickOne = a => a[Math.floor(r() * a.length)];
+  const NAMES = ['Алексей', 'Мария', 'Дмитрий', 'Ольга', 'Сергей', 'Анна', 'Игорь', 'Екатерина', 'Павел', 'Наталья', 'Артём', 'Виктор', 'Юлия', 'Максим', 'Илья', 'Светлана'];
+  const CARS = ['Kia Rio, белый', 'Hyundai Solaris, серый', 'Toyota Camry, чёрный', 'VW Polo, синий', 'Skoda Octavia, белый', 'BMW X5, чёрный',
+                'Haval Jolion, серый', 'Lada Vesta, белая', 'Mercedes E, чёрный', 'Chery Tiggo 7, красный', 'Geely Monjaro, белый', 'Kia Sportage, серый'];
+  const phone = () => `+7 (900) ${100 + Math.floor(r() * 899)}-${String(10 + Math.floor(r() * 89))}-${String(10 + Math.floor(r() * 89))}`;
+  const all = []; cfg.categories.forEach(c => c.services.forEach(s => { if (!s.hidden) all.push(s); }));
+  const pool = all.filter(s => !s.call && s.dur !== 'days' && s.dur >= 30 && s.dur <= 180);
+  const main = pool.slice(0, Math.max(3, Math.ceil(pool.length / 3)));         // первые позиции прайса — самые ходовые
+  const longOne = all.find(s => s.dur === 'days' && !s.call);
+  if (pool.length) {
+    for (let d = -1; d <= 6; d++) {
+      const k = addDays(now.date, d), hh = dayHours(cfg, k);
+      if (!hh) continue;
+      const load = d < 0 ? 0.6 : d === 0 ? 0.55 : Math.max(0.15, 0.5 - d * 0.06);   // ближайшие дни заняты плотнее
+      for (let box = 0; box < cfg.boxes; box++) {
+        let t = hh[0] + STEP * Math.floor(r() * 3);
+        while (t < hh[1] - 30) {
+          if (r() < load) {
+            const s = r() < 0.75 ? pickOne(main) : pickOne(pool);
+            const dur = Math.ceil(s.dur / STEP) * STEP;
+            if (t + dur > hh[1]) break;
+            const past = k < now.date || (k === now.date && t + dur <= now.min);
+            const online = r() < 0.6;
+            B.push({ id: id++, kind: online ? 'online' : 'manual', status: past ? (r() < 0.93 ? 'done' : 'noshow') : 'confirmed',
+              date: k, start: t, dur, box, services: snap([s]), total: s.price, name: pickOne(NAMES), phone: phone(), car: pickOne(CARS),
+              comment: r() < 0.12 ? pickOne(['Сильно грязный салон', 'Есть собака, шерсть', 'Буду к открытию', 'Нужна безналичная оплата']) : '',
+              token: token(), seen: 1, created_at: now.iso, updated_at: now.iso });
+            t += dur + STEP * Math.floor(r() * 2);
+          } else t += STEP * (1 + Math.floor(r() * 2));
+        }
+      }
+    }
+  }
+  // пара свежих онлайн-записей, которые владелец ещё не видел
+  B.filter(b => b.kind === 'online' && b.status === 'confirmed').slice(-2).forEach(b => { b.seen = 0; });
+  // заявка на долгую работу — ждёт звонка администратора
+  if (longOne) B.push({ id: id++, kind: 'request', status: 'new', date: addDays(now.date, 2), start: null, dur: null, box: null,
+    services: snap([longOne]), total: longOne.price, name: 'Роман', phone: phone(), car: 'Audi Q7, белый', comment: 'Подскажите по срокам',
+    token: token(), seen: 0, created_at: now.iso, updated_at: now.iso });
+  return { cfg, bookings: B, next: id };
+}
+const ownerView = b => { const o = clone(b); delete o.token; delete o.idem; delete o.u; return o; };
+
+// ---------- подмена fetch ----------
+const realFetch = window.fetch.bind(window);
+const rx = new RegExp('/api/' + SLUG + '/(.+)$');
+window.fetch = async (input, init = {}) => {
+  const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+  const m = url.pathname.match(rx);
+  if (!m) return realFetch(input, init);
+  await new Promise(res => setTimeout(res, 120 + Math.random() * 150));
+  let body = {};
+  try { body = init.body ? JSON.parse(init.body) : {}; } catch (e) {}
+  const reply = (status, data) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
+  try { return reply(200, handle((init.method || 'GET').toUpperCase(), m[1], url.searchParams, body || {})); }
+  catch (e) {
+    if (e instanceof ApiError) return reply(e.status, { error: e.error, message: e.message });
+    console.error(e); return reply(500, { error: 'server', message: 'Ошибка в демо' });
+  }
+};
+window.__zapisDemoReset = () => { try { localStorage.removeItem(SKEY); } catch (e) {} MEM = null; };
+})();
+</script>
+<script>
+const DATA = {"slug": "m-avto", "name": "М-Авто", "kind": "Автомойка и автосервис", "address": "Санкт-Петербург, 16-я линия В.О., 81", "district": "Василеостровский район", "mapsUrl": "https://yandex.ru/maps/org/m_avto/43045824344/", "phones": [{"value": "+79650659900", "label": "Запись"}, {"value": "+79939659900", "label": "Доп. номер"}], "telegram": "https://t.me/+79117068114", "vk": "", "rating": 4.7, "reviews": 257, "hours": {"mon": ["09:00", "21:00"], "tue": ["09:00", "21:00"], "wed": ["09:00", "21:00"], "thu": ["09:00", "21:00"], "fri": ["09:00", "21:00"], "sat": ["09:00", "21:00"], "sun": ["09:00", "21:00"]}, "boxes": 2, "accent": "#F76B15", "photos": ["https://avatars.mds.yandex.net/get-altay/5517178/2a00000180bd73f7b1056357b8243ea2eeba/XXL", "https://avatars.mds.yandex.net/get-altay/218662/2a00000186f5bc0c7cc1ca4fe66e6a9326ee/XXL", "https://avatars.mds.yandex.net/get-altay/7734890/2a000001871aa1b28391b3788b54ca247030/XXL", "https://avatars.mds.yandex.net/get-altay/11004775/2a0000018ce379a068cf93c809c64f56b373/XXL", "https://avatars.mds.yandex.net/get-altay/19300673/2a0000019df7a7ac746b95f8769ee134c51e/XXL", "https://avatars.mds.yandex.net/get-altay/5098810/2a0000018281d5ebdc7b4d7d490028a6b79f/XXL", "https://avatars.mds.yandex.net/get-altay/5102477/2a00000180bd742d935607b80b9160948ce2/XXL", "https://avatars.mds.yandex.net/get-altay/19785895/2a0000019df7a50203b70477bb5105a4ece3/XXL"], "pricesSource": "Яндекс Карты, прайс организации", "categories": [{"name": "Мойка", "services": [{"id": "0-0", "name": "Технологическая мойка (облив водой)", "price": 300, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-1", "name": "Мойка кузова «Стандарт»", "price": 650, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "0-2", "name": "Мойка «Люкс» без багажника", "price": 1300, "from": false, "desc": "1 кат 1300 р, 2 кат 1400 р, 3 кат 1600 р, 4 кат 1800 р", "dur": 90, "hidden": false, "call": false}, {"id": "0-3", "name": "Мойка «Экстра люкс»", "price": 1450, "from": false, "desc": "Мойка кузова + коврики, Пылесос всего салона, Влажна уборка салона + пластика, Чернение резины", "dur": 90, "hidden": false, "call": false}, {"id": "0-4", "name": "Мойка «Премиум»", "price": 2400, "from": false, "desc": "Мойка кузова + коврики, Обезжиривание кузова, Покрытие воском кузова, Уборка салона пылесосом, Влажная уборка…", "dur": 120, "hidden": false, "call": false}, {"id": "0-5", "name": "Мойка радиатора", "price": 500, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "0-6", "name": "Мойка арок", "price": 200, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-7", "name": "Мойка мотоцикла", "price": 600, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "0-8", "name": "Мойка двигателя", "price": 500, "from": true, "desc": "", "dur": 45, "hidden": false, "call": false}, {"id": "0-9", "name": "Мойка ковриков", "price": 100, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-10", "name": "Мойка лобового стекла", "price": 100, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-11", "name": "Удаление металлических вкраплений с кузова", "price": 2000, "from": false, "desc": "", "dur": 45, "hidden": false, "call": false}, {"id": "0-12", "name": "Обработка замков WD-40", "price": 200, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-13", "name": "Обезжиривание кузова", "price": 350, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-14", "name": "Чистка дисков спецхимией", "price": 300, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-15", "name": "Чернение шин", "price": 150, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-16", "name": "Уборка пылесосом багажника", "price": 250, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-17", "name": "Очистка стекла", "price": 150, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}, {"id": "0-18", "name": "Влажная уборка салона", "price": 200, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "0-19", "name": "Глубокая очистка дисков с кислотой", "price": 250, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "0-20", "name": "Уборка салона пылесосом", "price": 300, "from": false, "desc": "1 кат 300 р, 2 кат 350 р, 3 кат 400 р, 4 кат 600 р", "dur": 60, "hidden": false, "call": false}, {"id": "0-21", "name": "Турбосушка", "price": 300, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 30, "hidden": false, "call": false}]}, {"name": "Химчистка", "services": [{"id": "1-0", "name": "Химчистка салона", "price": 7000, "from": true, "desc": "", "dur": 480, "hidden": false, "call": false}, {"id": "1-1", "name": "Химчистка одного ковра", "price": 500, "from": true, "desc": "", "dur": 60, "hidden": false, "call": false}, {"id": "1-2", "name": "Химчистка потолка", "price": 2000, "from": true, "desc": "", "dur": 120, "hidden": false, "call": false}, {"id": "1-3", "name": "Химчистка пола", "price": 2000, "from": true, "desc": "", "dur": 120, "hidden": false, "call": false}, {"id": "1-4", "name": "Частичная химчистка салона", "price": 5000, "from": true, "desc": "Цена для легковых, для крупных автомобилей — выше", "dur": 60, "hidden": false, "call": false}, {"id": "1-5", "name": "Полная химчистка авто", "price": 8000, "from": true, "desc": "", "dur": 480, "hidden": false, "call": false}]}, {"name": "Полировка и покрытия", "services": [{"id": "2-0", "name": "Антидождь на 3 стекла", "price": 1600, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "2-1", "name": "Кварцевое покрытие кузова", "price": 3300, "from": false, "desc": "1 КАТ 3300 Р, 2 КАТ 3800 Р, 3 КАТ 4300 Р, 4 КАТ 5000 Р", "dur": 90, "hidden": false, "call": false}, {"id": "2-2", "name": "Полировка авто", "price": 6000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "2-3", "name": "Антидождь на стёкла", "price": 1000, "from": false, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "2-4", "name": "Полировка фар", "price": 500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "2-5", "name": "Нанесение кварцевого покрытия", "price": 2000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "2-6", "name": "Полная полировка авто", "price": 7000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}]}, {"name": "Ремонт и ТО", "services": [{"id": "3-0", "name": "Замена габаритной лампы", "price": 150, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "3-1", "name": "Замена тормозного диска переднего", "price": 1000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-2", "name": "Замена тормозных колодок (передних)", "price": 1000, "from": false, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-3", "name": "Замена подшипника переднего", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-4", "name": "Замена подшипника заднего", "price": 2000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-5", "name": "Ремонт рулевой рейки", "price": 12000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-6", "name": "Снятие и установка рулевой рейки", "price": 4000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-7", "name": "Замена стоек стабилизатора передних", "price": 850, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-8", "name": "Замена амортизатора переднего", "price": 2500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-9", "name": "Замена заднего амортизатора", "price": 1500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-10", "name": "Замена лампы ближнего света", "price": 250, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}, {"id": "3-11", "name": "Замена гофры глушителя", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "3-12", "name": "Замена цепи ГРМ", "price": 8000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "3-13", "name": "Замена лампы дальнего света", "price": 250, "from": true, "desc": "", "dur": 30, "hidden": false, "call": false}]}, {"name": "Кузовной ремонт", "services": [{"id": "4-0", "name": "Арматурные работы", "price": 1500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-1", "name": "Сварочные работы", "price": 1500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-2", "name": "Снятие и установка крыла", "price": 1800, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-3", "name": "Снятие и установка капота", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-4", "name": "Снятие и установка двери", "price": 4500, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-5", "name": "Ремонт арок автомобиля", "price": 7000, "from": false, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-6", "name": "Антикоррозийная обработка днища (арок) автомобиля", "price": 10000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-7", "name": "Рихтовка одного элемента", "price": 7500, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-8", "name": "Ремонт бампера", "price": 2000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-9", "name": "Снятие и установка бампера", "price": 3000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-10", "name": "Покраска одного элемента", "price": 9000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-11", "name": "Полная покраска авто", "price": 80000, "from": true, "desc": "", "dur": "days", "hidden": false, "call": false}, {"id": "4-12", "name": "Снятие и установка крышки багажника", "price": 4000, "from": true, "desc": "", "dur": 90, "hidden": false, "call": false}, {"id": "4-13", "name": "Замена и ремонт порогов автомобиля", "price": 9500, "from": true, "desc": "В зависимости от автомобиля от 5000р. до 20500р.", "dur": "days", "hidden": false, "call": false}]}], "confirm": false, "daysOff": []};
 </script>
 <script>
 (() => {
@@ -274,7 +606,10 @@ const I = {
 
 // ---------- data prep ----------
 // LIVE = рабочая версия: время, записи и цены берутся с сервера. Иначе — демо для показа владельцу.
-const LIVE = /*__LIVE__*/false;
+const LIVE = true;
+// DEMO = показ владельцу: всё работает как в рабочей версии, но «сервер» живёт в браузере (demo_server.js)
+const DEMO = true;
+const SHOW_DEMO = DEMO || !LIVE;
 const API = '/api/' + D.slug;
 const overrides = LIVE ? {} : (()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch(e){return {}}})();
 // демо: какие услуги владелец перевёл в «только по звонку» (в рабочей версии это хранится на сервере)
@@ -364,7 +699,7 @@ function renderMain(){
     : LIVE ? (D.vk ? `<a class="qa" href="${esc(D.vk)}" target="_blank" rel="noopener">${I.tg}Написать</a>` : '')
     : `<a class="qa" href="#owner">${I.home}Кабинет</a>`;
   $('#app').innerHTML = `
-  ${LIVE ? '' : `<div class="demo-bar">Демо для <b>${esc(D.name)}</b> · записи никуда не уходят</div>`}
+  ${SHOW_DEMO ? `<div class="demo-bar"><span>Демо для <b>${esc(D.name)}</b> · записи никуда не уходят</span><a href="${LIVE?'owner/':'#owner'}">Кабинет владельца →</a></div>` : ''}
   <div class="hero">
     <div class="hero-track" id="track">${(D.photos||[]).map((p,i)=>`<img src="${esc(p)}" alt="${esc(D.name)} — фото ${i+1}" ${i?'loading="lazy"':''} referrerpolicy="no-referrer" onerror="this.remove()">`).join('')}</div>
     <div class="dots" id="dots">${(D.photos||[]).map((_,i)=>`<i class="${i?'':'on'}" data-i="${i}"></i>`).join('')}</div>
@@ -388,7 +723,7 @@ function renderMain(){
   <div class="section-title" id="svcTitle">Услуги и цены</div>
   <div class="chips" id="chips">${chipsHtml()}</div>
   <div id="catBody" class="cat">${catHtml()}</div>
-  <div class="note">${LIVE ? 'Длительность указана примерно — точнее подскажет администратор.' : `Цены — из прайса организации${D.pricesSource?' ('+esc(D.pricesSource)+')':''}. Длительность примерная, её можно поменять в кабинете.`}</div>
+  <div class="note">${!SHOW_DEMO ? 'Длительность указана примерно — точнее подскажет администратор.' : `Цены — из прайса организации${D.pricesSource?' ('+esc(D.pricesSource)+')':''}. Длительность примерная, её можно поменять в кабинете.`}</div>
   <div class="section-title">Контакты</div>
   <div class="info-card">
     <div class="r"><span>Адрес</span><span style="text-align:right">${esc(D.address)}</span></div>
@@ -396,8 +731,8 @@ function renderMain(){
     <div class="r"><span>Режим работы</span><span>${allSame?'ежедневно '+D.hours.mon[0]+'–'+D.hours.mon[1]:'см. график'}</span></div>
   </div>
   <button class="install" id="install">${I.home}<div><b>Добавить на главный экран</b><br><span>Иконка рядом с приложениями, открывается на весь экран</span></div><span class="go">${I.back}</span></button>
-  <footer>${LIVE ? `Онлайн-запись · <a href="policy.html" style="text-decoration:underline">Обработка персональных данных</a>`
-    : `Онлайн-запись для ${esc(D.name)} · <a href="#owner" style="text-decoration:underline">Кабинет владельца (демо)</a>`}</footer>
+  <footer>${!SHOW_DEMO ? `Онлайн-запись · <a href="policy.html" style="text-decoration:underline">Обработка персональных данных</a>`
+    : `Онлайн-запись для ${esc(D.name)} · <a href="${LIVE?'owner/':'#owner'}" style="text-decoration:underline">Кабинет владельца (демо)</a>`}</footer>
   <div class="bar"><div class="in">${barHtml()}</div></div>`;
   bindMain();
 }
@@ -718,7 +1053,7 @@ function renderSheet(){
     }
   } else if (st.step===2){
     const f=st.form;
-    const policy = LIVE ? ` (<a href="policy.html" target="_blank">подробнее</a>)` : '';
+    const policy = LIVE && !DEMO ? ` (<a href="policy.html" target="_blank">подробнее</a>)` : '';
     body = summary + (st.sendErr ? `<div class="send-err">${esc(st.sendErr)}${tel?`<br>Или позвоните: <a href="tel:${esc(tel)}">${fmtPhone(tel)}</a>`:''}</div>` : '') + `
       <div class="field" id="f-name"><label>Имя</label><input id="iname" autocomplete="name" value="${esc(f.name)}" placeholder="Как к вам обращаться"><div class="err">Укажите имя</div></div>
       <div class="field" id="f-phone"><label>Телефон</label><input id="iphone" type="tel" inputmode="tel" autocomplete="tel" value="${esc(f.phone)}"><div class="err">Проверьте номер</div></div>
@@ -732,8 +1067,8 @@ function renderSheet(){
     const sub = res.request && res.start==null ? 'Администратор перезвонит, чтобы договориться о времени.'
       : res.status==='new' ? 'Мойка подтвердит запись. Статус видно на этой странице, в разделе «Ваши записи».'
       : 'Ждём вас! Если планы изменятся, отменить запись можно на этой странице, в разделе «Ваши записи».';
-    body = `<div class="done"><div class="ok">${I.check}</div><h3>${title}</h3><p>${when}<br>${esc(D.address)}</p>${summary}<p style="font-size:13px">${sub}</p></div>`;
-    foot = `${res.start!=null?`<button class="ghost" id="ics" style="margin:0 0 8px">Добавить в календарь</button>`:''}<button class="cta center" id="next">Готово</button>`;
+    body = `<div class="done"><div class="ok">${I.check}</div><h3>${title}</h3><p>${when}<br>${esc(D.address)}</p>${summary}<p style="font-size:13px">${sub}</p>${DEMO?'<p style="font-size:13px">Эта запись уже появилась в кабинете владельца. В рабочей версии о ней ещё приходит уведомление в Telegram.</p>':''}</div>`;
+    foot = `${res.start!=null?`<button class="ghost" id="ics" style="margin:0 0 8px">Добавить в календарь</button>`:''}<button class="cta center" id="next">Готово</button>${DEMO?'<button class="ghost" id="seeOwner">Посмотреть, что видит владелец</button>':''}`;
   } else {
     body = `<div class="done"><div class="ok">${I.check}</div><h3>${rq?'Заявка отправлена':'Вы записаны'}</h3>
       <p>${dateHuman(st.date)}${!rq&&st.time?', '+hm(st.time.t):''}<br>${esc(D.address)}</p>
@@ -766,7 +1101,7 @@ function renderSheet(){
     }
     closeSheet();
   };
-  const so=$('#seeOwner'); if(so) so.onclick=()=>{closeSheet(); location.hash='owner';};
+  const so=$('#seeOwner'); if(so) so.onclick=()=>{closeSheet(); if (LIVE) location.href='owner/'; else location.hash='owner';};
 }
 function maskPhone(v){ let d=v.replace(/\D/g,''); if(d.startsWith('8')) d='7'+d.slice(1); if(!d.startsWith('7')) d='7'+d; d=d.slice(0,11); let r='+7'; if(d.length>1) r+=' ('+d.slice(1,4); if(d.length>=4) r+=') '+d.slice(4,7); if(d.length>=7) r+='-'+d.slice(7,9); if(d.length>=9) r+='-'+d.slice(9,11); return r; }
 function dateHuman(k){ const d=new Date(k+'T00:00'); const t=ymd(new Date()); const tm=new Date(); tm.setDate(tm.getDate()+1); const pre = k===t?'Сегодня, ':k===ymd(tm)?'Завтра, ':''; return pre + d.getDate()+' '+MON_RU[d.getMonth()]+(pre?'':', '+DOW_RU[d.getDay()].toLowerCase()); }
