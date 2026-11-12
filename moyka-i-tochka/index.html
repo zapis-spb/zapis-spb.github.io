@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Мойка и точка — онлайн-запись</title>
+<meta name="theme-color" content="#0E1014">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Мойка и точка">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- шрифт грузится в фоне: если Google в России тормозит, страница всё равно сразу открывается системным шрифтом -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --bg:#0E1014; --bg2:#15181E; --card:#1A1E25; --line:#262B34; --text:#F2F4F7; --muted:#9AA3B2; --dim:#6B7380;
+  --accent:#D6409F; --accent-ink:#fff; --ok:#3DD68C; --warn:#F5B84B; --danger:#FF6B6B;
+  --r:16px; --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{min-height:100dvh}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:560px;margin:0 auto;position:relative}
+.demo-bar{background:#22262E;color:var(--muted);font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid var(--line)}
+.demo-bar b{color:var(--text);font-weight:600}
+
+/* hero */
+.hero{position:relative;height:300px;overflow:hidden}
+.hero-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.hero-track::-webkit-scrollbar{display:none}
+.hero-track{transition:opacity .2s}
+.hero-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;scroll-snap-stop:always;background:#1b1f26}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,16,20,.15) 0%,rgba(14,16,20,0) 35%,rgba(14,16,20,.92) 100%);pointer-events:none}
+.dots{position:absolute;right:16px;top:14px;display:flex;gap:5px;z-index:2;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,.35)}
+.dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.4);transition:.2s}
+.dots i.on{width:18px;background:#fff}
+.hero-info{position:absolute;left:16px;right:16px;bottom:16px;z-index:2}
+.kind{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{margin:4px 0 6px;font-size:30px;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:#C9CFD8}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.star{color:#FFC94D}
+
+/* quick actions */
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 16px 4px}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;color:var(--muted);font-weight:600}
+.qa svg{width:20px;height:20px;color:var(--text)}
+.open-now{margin:10px 16px 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.open-now .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(61,214,140,.15)}
+.open-now.closed .dot{background:var(--dim);box-shadow:none}
+
+/* catalog */
+.section-title{padding:22px 16px 8px;font-size:20px;font-weight:800;letter-spacing:-.01em}
+.chips{position:sticky;top:0;z-index:5;background:rgba(14,16,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;gap:8px;overflow-x:auto;padding:10px 16px;scrollbar-width:none;border-bottom:1px solid transparent}
+.chips.stuck{border-bottom-color:var(--line)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.chip .cnt{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:800}
+.cat{padding:0 16px 4px}
+.cat-h{display:inline-flex;align-items:baseline;gap:8px;margin:20px 0 10px -10px;padding:4px 10px;border-radius:10px;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.cat-h .n{font-size:13px;font-weight:600;color:var(--dim)}
+.cat-h.flash{animation:catFlash 1.4s ease-out}
+@keyframes catFlash{0%,35%{background:color-mix(in srgb,var(--accent) 28%,transparent);color:var(--accent)}100%{background:transparent;color:var(--text)}}
+.hero-nav{position:absolute;top:42%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:none;place-items:center;z-index:3;backdrop-filter:blur(6px)}
+.hero-nav svg{width:20px;height:20px}
+.hero-nav.l{left:12px}.hero-nav.r{right:12px}
+@media (hover:hover) and (pointer:fine){.hero-nav{display:grid}.hero-track,.chips,.days{cursor:grab}}
+.dragging{cursor:grabbing!important;scroll-snap-type:none!important;user-select:none}
+.dots i{cursor:pointer}
+.svc{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:8px;transition:border-color .15s,background .15s}
+.svc.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--card))}
+.svc .body{flex:1;min-width:0}
+.svc .nm{font-weight:700;font-size:15px}
+.svc .ds{color:var(--muted);font-size:13px;margin-top:3px}
+.svc .row{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:13px;color:var(--dim)}
+.svc .pr{color:var(--text);font-weight:700;font-size:15px}
+.add{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);display:grid;place-items:center;transition:.15s}
+.add svg{width:18px;height:18px}
+.svc.sel .add{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.note{color:var(--dim);font-size:12px;padding:8px 16px 0}
+.info-card{margin:8px 16px 0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.info-card .r{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14px}
+.info-card .r span:first-child{color:var(--muted)}
+footer{padding:28px 16px calc(120px + var(--safe-b));color:var(--dim);font-size:12px;text-align:center}
+
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px calc(12px + var(--safe-b));background:linear-gradient(180deg,rgba(14,16,20,0),rgba(14,16,20,.96) 30%);pointer-events:none}
+.bar .in{max-width:528px;margin:0 auto;pointer-events:auto}
+.cta{width:100%;height:56px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 10px 30px -10px color-mix(in srgb,var(--accent) 70%,transparent);transition:transform .1s,opacity .2s}
+.cta:active{transform:scale(.985)}
+.cta[disabled]{opacity:.45;box-shadow:none}
+.cta .sub{font-weight:600;font-size:13px;opacity:.85}
+.cta.center{justify-content:center}
+
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet-bg.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:94dvh;display:flex;flex-direction:column;background:var(--bg2);border-radius:22px 22px 0 0;transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-width:560px;margin:0 auto;border-top:1px solid var(--line)}
+.sheet.on{transform:none}
+.sh-head{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+.sh-head h2{font-size:18px;margin:0;flex:1;font-weight:800}
+.icon-btn{width:36px;height:36px;border-radius:12px;background:var(--card);display:grid;place-items:center;border:1px solid var(--line)}
+.icon-btn svg{width:18px;height:18px}
+.steps{display:flex;gap:6px;padding:0 16px 8px}
+.steps i{flex:1;height:3px;border-radius:2px;background:var(--line)}
+.steps i.on{background:var(--accent)}
+.sh-body{overflow-y:auto;padding:4px 16px 16px;flex:1}
+.sh-foot{padding:12px 16px calc(12px + var(--safe-b));border-top:1px solid var(--line)}
+.summary{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+.summary .l{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.summary .l span:first-child{color:var(--muted)}
+.summary .l span:last-child{white-space:nowrap}
+.label{font-size:13px;color:var(--muted);font-weight:600;margin:14px 0 8px}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin:0 -16px;padding:0 16px 4px}
+.days::-webkit-scrollbar{display:none}
+.day{flex:0 0 auto;width:58px;padding:9px 0;border-radius:14px;background:var(--card);border:1px solid var(--line);text-align:center}
+.day .w{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.day .d{font-size:18px;font-weight:800;margin-top:2px}
+.day.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.day.on .w{color:inherit;opacity:.85}
+.day.off{opacity:.35}
+.times{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.time{padding:11px 0;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:center;font-weight:700;font-size:14px}
+.time.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.time[disabled]{opacity:.28;text-decoration:line-through}
+.period{grid-column:1/-1;font-size:12px;color:var(--dim);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.empty{padding:22px;text-align:center;color:var(--muted);background:var(--card);border-radius:14px;border:1px dashed var(--line)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.field input,.field textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:16px;outline:none;transition:border-color .15s}
+.field input:focus,.field textarea:focus{border-color:var(--accent)}
+.field .err{color:var(--danger);font-size:12px;margin-top:5px;display:none}
+.field.bad input{border-color:var(--danger)}
+.field.bad .err{display:block}
+.agree{font-size:12px;color:var(--dim);margin-top:6px}
+.done{text-align:center;padding:24px 8px 8px}
+.done .ok{width:72px;height:72px;border-radius:50%;background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok);display:grid;place-items:center;margin:0 auto 14px}
+.done .ok svg{width:36px;height:36px}
+.done h3{font-size:22px;margin:0 0 6px;font-weight:800}
+.done p{color:var(--muted);margin:0 0 16px}
+.ghost{width:100%;height:50px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-weight:700;margin-top:8px}
+.install{margin:16px 16px 0;width:calc(100% - 32px);padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);display:flex;gap:12px;align-items:center;font-size:13px;color:var(--muted);text-align:left}
+.install>div{flex:1}
+.install b{color:var(--text);font-size:14px}
+.install svg{flex:0 0 22px;height:22px;color:var(--accent)}
+.install .go{transform:scaleX(-1);display:grid}.install .go svg{color:var(--dim);flex:0 0 18px;width:18px;height:18px}
+.howto{list-style:none;margin:0;padding:0;counter-reset:s}
+.howto li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;padding:10px 0;font-size:15px}
+.howto li::before{content:counter(s);flex:0 0 28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;font-size:14px}
+.howto b{font-weight:800}
+.howto-warn{background:color-mix(in srgb,var(--warn) 12%,var(--card));border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:14px;padding:12px 14px;font-size:14px;margin-bottom:12px}
+.toast{position:fixed;left:50%;top:16px;transform:translate(-50%,calc(-100% - 40px));background:var(--card);border:1px solid var(--line);padding:10px 16px;border-radius:12px;z-index:50;font-size:14px;transition:transform .3s;max-width:90vw}
+.toast.on{transform:translate(-50%,0)}
+
+/* рабочая версия: «Ваши записи», ошибки, загрузка */
+.mine-card{margin:0 16px 8px;background:var(--card);border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:var(--r);padding:14px}
+.mine-card .t{font-weight:800;font-size:16px}
+.mine-card .s{color:var(--muted);font-size:13px;margin-top:3px}
+.mine-card .stt{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.mine-card .stt.new{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+.mine-card .acts{display:flex;gap:8px;margin-top:12px}
+.mini{flex:1;height:40px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);font-weight:700;font-size:14px;display:grid;place-items:center}
+.mini.danger{color:var(--danger)}
+.send-err{background:color-mix(in srgb,var(--danger) 12%,var(--card));border:1px solid color-mix(in srgb,var(--danger) 40%,var(--line));border-radius:14px;padding:12px 14px;font-size:14px;margin:0 0 12px}
+.send-err a{text-decoration:underline;font-weight:700}
+.send-err .acts{display:flex;gap:8px;margin-top:10px}
+.loading{display:flex;align-items:center;justify-content:center;gap:10px}
+.spin{width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex:0 0 18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.day.full .d{opacity:.45}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.agree a{text-decoration:underline}
+
+/* owner */
+.owner{padding:0 16px calc(40px + var(--safe-b))}
+.owner .tabs{display:flex;gap:8px;margin:12px 0}
+.owner .tab{flex:1;padding:10px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:700;font-size:14px}
+.owner .tab.on{background:var(--text);color:var(--bg)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi .v{font-size:20px;font-weight:800}
+.kpi .k{font-size:12px;color:var(--muted)}
+.tl{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;overflow-x:auto}
+.tl-grid{display:grid;gap:6px;min-width:100%}
+.tl-row{display:grid;grid-template-columns:52px 1fr;gap:8px;align-items:stretch}
+.tl-h{font-size:12px;color:var(--dim);padding-top:6px}
+.tl-boxes{display:grid;gap:6px}
+.slot{min-height:30px;border-radius:8px;background:var(--bg2);font-size:12px;padding:6px 8px;color:var(--dim)}
+.slot.busy{background:color-mix(in srgb,var(--accent) 22%,var(--bg2));color:var(--text)}
+.slot.mine{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.bk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.bk .t{font-weight:800}
+.bk .s{color:var(--muted);font-size:13px;margin-top:2px}
+.pedit{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.pedit .n{flex:1;font-size:14px}
+.pedit input{width:96px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:right;font-weight:700}
+.owner-note{font-size:12px;color:var(--dim);margin:10px 0 0}
+@media (min-width:600px){.hero{height:360px;border-radius:0 0 22px 22px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = {"slug": "moyka-i-tochka", "name": "Мойка и точка", "kind": "Автомойка и детейлинг", "address": "Санкт-Петербург, Московский пр., 83Т", "district": "Адмиралтейский район", "mapsUrl": "https://yandex.ru/maps/org/mojka_i_tochka/17718244193/", "phones": [{"value": "+79395564155", "label": "Запись"}], "telegram": "https://t.me/+79930778383", "vk": "", "rating": 5.0, "reviews": 325, "hours": {"mon": ["10:00", "22:00"], "tue": ["10:00", "22:00"], "wed": ["10:00", "22:00"], "thu": ["10:00", "22:00"], "fri": ["10:00", "22:00"], "sat": ["10:00", "22:00"], "sun": ["10:00", "22:00"]}, "boxes": 2, "accent": "#D6409F", "photos": ["https://avatars.mds.yandex.net/get-altay/16497373/2a000001977d09d6cbfe82662a57998e0689/XXL", "https://avatars.mds.yandex.net/get-altay/11072941/2a0000018b62051b8ab948f8b038f016ff64/XXL", "https://avatars.mds.yandex.net/get-altay/15696528/2a0000019f6aac24f377c539bd4ee0584688/XXL", "https://avatars.mds.yandex.net/get-altay/15288133/2a00000197e546e377225a10ed80686cef6b/XXL", "https://avatars.mds.yandex.net/get-altay/16542720/2a00000195fca304fafe9fad3403da23a7da/XXL", "https://avatars.mds.yandex.net/get-altay/11408080/2a000001916b17f4176d903731392711e68e/XXL", "https://avatars.mds.yandex.net/get-altay/15205167/2a00000195fc7fbb57ad21bf59ac25e2a8c8/XXL", "https://avatars.mds.yandex.net/get-altay/15152716/2a00000196017581a95a3e35e95bd646d9f9/XXL"], "pricesSource": "Яндекс Карты, прайс организации", "categories": [{"name": "Мойка", "services": [{"name": "Экспресс мойка", "price": 750, "desc": "Бесконтактная мойка кузова, мойка коврика (без сушки).", "dur": 30}, {"name": "Двухфазная мойка", "price": 1500, "desc": "Бесконтактная, контактная мойка ручным антистатическим шампунем с крупнопористой губкой, сушка полотенцем…", "dur": 60}, {"name": "Трёхфазная мойка", "price": 2300, "desc": "Бесконтактная, контактная мойка ручным антистатическим шампунем с крупнопористой губкой, консервирующий…", "dur": 60}, {"name": "Люкс Точка", "price": 3100, "desc": "Двухфазная мойка, коврики, пылесос салона и багажника, обработака пластика, очистка стекла, сушка полотенцем…", "dur": 90}, {"name": "Премиум Точка", "price": 4500, "desc": "Мойка Люкс, обезжиривание, нанесение кварцевого покрытия, чистка колесных дисков, обработка кожаного салона…", "dur": 120}, {"name": "Комфорт Точка", "price": 6500, "desc": "Мойка Премиум, антидождь.", "dur": 150}, {"name": "Мойка радиатора", "price": 7500, "desc": "Снятие и установка бампера входят в стоимость.", "dur": 180}, {"name": "Мойка днища", "price": 1500, "desc": "Профессиональная очистка нижней части автомобиля от грязи, соли, песка и других загрязнений, которые…", "dur": 60}]}, {"name": "Химчистка", "services": [{"name": "Химчистка салона", "price": 15000, "desc": "Профессиональна химчистка салона от 15000 руб., в зависимости от загрязнения. Глубокая очистка всех элементов…", "from": true, "dur": 480}]}, {"name": "Полировка и покрытия", "services": [{"name": "Полировка автомобиля", "price": 15000, "desc": "Комплексная процедура восстановления лакокрасочного покрытия, которая не только улучшает внешний вид вашего…", "dur": "days"}, {"name": "Керамическое покрытие", "price": 15000, "desc": "Современный способ защиты автомобиля, который позволяет надолго сохранить его внешний вид и защитить от…", "dur": "days"}]}, {"name": "Оклейка плёнкой", "services": [{"name": "Оклейка плёнкой зон риска", "price": 95000, "desc": "Оклейка «зон риска» (капот, передние крылья, передний бампер, передние фары, полоса на крыше, зеркала заднего…", "dur": "days"}]}]};
+</script>
+<script>
+(() => {
+const D = DATA, $ = s => document.querySelector(s);
+const KEY = 'bk_' + D.slug, PKEY = 'pr_' + D.slug;
+const DOW = ['sun','mon','tue','wed','thu','fri','sat'];
+const DOW_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const MON_RU = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const STEP = 30;
+
+const I = {
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+  route:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  tg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l8-6"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>'
+};
+
+// ---------- data prep ----------
+// LIVE = рабочая версия: время, записи и цены берутся с сервера. Иначе — демо для показа владельцу.
+const LIVE = /*__LIVE__*/false;
+const API = '/api/' + D.slug;
+const overrides = LIVE ? {} : (()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch(e){return {}}})();
+let SV = [];
+function buildSV(){
+  SV = [];
+  D.categories.forEach((c,ci)=>c.services.forEach((s,si)=>{
+    const id = s.id || ci+'-'+si;
+    SV.push({...s, id, cat:c.name, price: overrides[id] ?? s.price, dur: s.dur || guessDur(s.name, s.price)});
+  }));
+}
+buildSV();
+function guessDur(n, p){
+  n = n.toLowerCase();
+  if (/кузова|зон риска|оклейка бампера|бампера/.test(n)) return 'days';
+  if (/восстановит|глянцев/.test(n)) return 'days';
+  if (/полная химчистка/.test(n)) return 480;
+  if (/вмятин/.test(n)) return 120;
+  if (/бронирование фар|полировка фар|полировка элемента/.test(n)) return 90;
+  if (/детейлинг|detailing/.test(n)) return 150;
+  if (/комплекс/.test(n)) return 120;
+  if (/кварц|premium/.test(n)) return 90;
+  if (/химчистка/.test(n)) return 60;
+  if (/антидожд|двигател|вкраплен|битум/.test(n)) return 45;
+  if (/lux|турбосушк|трёхфазная|трехфазная|мойка/.test(n)) return 60;
+  return 30;
+}
+const svc = id => SV.find(s=>s.id===id);
+const rub = n => n.toLocaleString('ru-RU') + ' ₽';
+const durTxt = m => m==='days' ? 'от 1 дня' : (m<60 ? m+' мин' : (Math.floor(m/60)+' ч' + (m%60? ' '+m%60+' мин':'')));
+const hm = m => String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const toMin = t => {const [h,m]=t.split(':').map(Number); return h*60+m};
+const ymd = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const hoursOf = d => { if ((D.daysOff||[]).includes(ymd(d))) return null; const h = D.hours[DOW[d.getDay()]]; return h ? [toMin(h[0]), toMin(h[1])] : null; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// bookings
+const load = () => {try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}};
+const save = b => {try{localStorage.setItem(KEY, JSON.stringify(b))}catch(e){}};
+// demo: правдоподобная занятость по дням (детерминированная)
+function seeded(dateStr){
+  let h = 0; for (const c of dateStr+D.slug) h = (h*31 + c.charCodeAt(0)) >>> 0;
+  const rnd = () => (h = (h*1103515245 + 12345) >>> 0) / 4294967296;
+  const d = new Date(dateStr+'T00:00'); const hh = hoursOf(d); if (!hh) return [];
+  const out = [];
+  for (let b=0; b<D.boxes; b++){
+    let t = hh[0] + Math.floor(rnd()*3)*STEP;
+    while (t < hh[1]-60){
+      if (rnd() < 0.45){ const len = [60,60,90,120,150][Math.floor(rnd()*5)]; out.push({box:b,start:t,dur:len,seed:true}); t += len; }
+      t += STEP * (1+Math.floor(rnd()*3));
+    }
+  }
+  return out;
+}
+function busy(dateStr){ return seeded(dateStr).concat(load().filter(x=>x.date===dateStr)); }
+function freeSlots(dateStr, dur){
+  if (LIVE){ const x = dayInfo(dateStr); return x ? x.times.map(t=>({t, box:null})) : []; }
+  const d = new Date(dateStr+'T00:00'); const hh = hoursOf(d); if (!hh) return [];
+  const now = new Date(); const isToday = ymd(now)===dateStr; const nowMin = now.getHours()*60+now.getMinutes()+30;
+  const b = busy(dateStr), out = [];
+  for (let t=hh[0]; t+dur<=hh[1]; t+=STEP){
+    if (isToday && t < nowMin) continue;
+    for (let box=0; box<D.boxes; box++){
+      if (!b.some(x=>x.box===box && t < x.start+x.dur && x.start < t+dur)){ out.push({t, box}); break; }
+    }
+  }
+  return out;
+}
+
+// ---------- state ----------
+const st = { cat: 0, sel: [], date: null, time: null, step: 0, form: {name:'',phone:'+7 ',car:'',comment:'',website:''},
+             idem: null, sending: false, sendErr: '', result: null };
+const selTotal = () => st.sel.reduce((a,id)=>a+svc(id).price,0);
+const selDur = () => { const ds = st.sel.map(id=>svc(id).dur); if (ds.includes('days')) return 'days'; return Math.ceil(ds.reduce((a,b)=>a+b,0)/STEP)*STEP; };
+const requestMode = () => selDur()==='days';
+
+// ---------- main page ----------
+function renderMain(){
+  const now = new Date(); const hh = hoursOf(now); const mm = now.getHours()*60+now.getMinutes();
+  const open = hh && mm>=hh[0] && mm<hh[1];
+  const allSame = Object.values(D.hours).every(h=>h && D.hours.mon && h[0]===D.hours.mon[0] && h[1]===D.hours.mon[1]);
+  const cats = D.categories.map(c=>c.name);
+  const tel = D.phones[0] ? D.phones[0].value : '';
+  const third = D.telegram ? `<a class="qa" href="${esc(D.telegram)}" target="_blank" rel="noopener">${I.tg}Telegram</a>`
+    : LIVE ? (D.vk ? `<a class="qa" href="${esc(D.vk)}" target="_blank" rel="noopener">${I.tg}Написать</a>` : '')
+    : `<a class="qa" href="#owner">${I.home}Кабинет</a>`;
+  $('#app').innerHTML = `
+  ${LIVE ? '' : `<div class="demo-bar">Демо-версия для <b>${esc(D.name)}</b> · записи в демо никуда не отправляются</div>`}
+  <div class="hero">
+    <div class="hero-track" id="track">${(D.photos||[]).map((p,i)=>`<img src="${esc(p)}" alt="${esc(D.name)} — фото ${i+1}" ${i?'loading="lazy"':''} referrerpolicy="no-referrer" onerror="this.remove()">`).join('')}</div>
+    <div class="dots" id="dots">${(D.photos||[]).map((_,i)=>`<i class="${i?'':'on'}" data-i="${i}"></i>`).join('')}</div>
+    ${(D.photos||[]).length>1?`<button class="hero-nav l" id="prevPh" aria-label="Предыдущее фото">${I.back}</button><button class="hero-nav r" id="nextPh" aria-label="Следующее фото" style="transform:translateY(-50%) scaleX(-1)">${I.back}</button>`:''}
+    <div class="hero-info">
+      <div class="kind">${esc(D.kind)}</div>
+      <h1>${esc(D.name)}</h1>
+      <div class="meta">
+        ${D.rating?`<span><span class="star">★</span> ${Number(D.rating).toFixed(1).replace('.',',')} · ${D.reviews} ${plural(D.reviews,'оценка','оценки','оценок')}</span>`:''}
+        <span>${esc(D.district||'')}</span>
+      </div>
+    </div>
+  </div>
+  <div class="open-now ${open?'':'closed'}"><span class="dot"></span>${open?`Открыто до ${D.hours[DOW[now.getDay()]][1]}`:'Сейчас закрыто'}${allSame?' · ежедневно '+D.hours.mon[0]+'–'+D.hours.mon[1]:''}</div>
+  <div class="quick" ${third?'':'style="grid-template-columns:1fr 1fr"'}>
+    <a class="qa" href="tel:${esc(tel)}">${I.phone}Позвонить</a>
+    <a class="qa" href="${esc(D.mapsUrl||('https://yandex.ru/maps/?text='+encodeURIComponent(D.address)))}" target="_blank" rel="noopener">${I.route}Маршрут</a>
+    ${third}
+  </div>
+  <div id="mine">${LIVE ? mineHtml() : ''}</div>
+  <div class="section-title" id="svcTitle">Услуги и цены</div>
+  <div class="chips" id="chips">${chipsHtml()}</div>
+  <div id="catBody" class="cat">${catHtml()}</div>
+  <div class="note">${LIVE ? 'Длительность указана примерно — точнее подскажет администратор.' : `Цены — из прайса организации${D.pricesSource?' ('+esc(D.pricesSource)+')':''}. Длительность примерная, её можно поменять в кабинете.`}</div>
+  <div class="section-title">Контакты</div>
+  <div class="info-card">
+    <div class="r"><span>Адрес</span><span style="text-align:right">${esc(D.address)}</span></div>
+    ${D.phones.map(p=>`<div class="r"><span>${esc(p.label||'Телефон')}</span><a href="tel:${esc(p.value)}">${fmtPhone(p.value)}</a></div>`).join('')}
+    <div class="r"><span>Режим работы</span><span>${allSame?'ежедневно '+D.hours.mon[0]+'–'+D.hours.mon[1]:'см. график'}</span></div>
+  </div>
+  <button class="install" id="install">${I.home}<div><b>Добавить на главный экран</b><br><span>Иконка рядом с приложениями, открывается на весь экран</span></div><span class="go">${I.back}</span></button>
+  <footer>${LIVE ? `Онлайн-запись · <a href="policy.html" style="text-decoration:underline">Обработка персональных данных</a>`
+    : `Онлайн-запись для ${esc(D.name)} · <a href="#owner" style="text-decoration:underline">Кабинет владельца (демо)</a>`}</footer>
+  <div class="bar"><div class="in">${barHtml()}</div></div>`;
+  bindMain();
+}
+function chipsHtml(){
+  return D.categories.map((c,i)=>{const n=SV.filter(s=>s.cat===c.name&&st.sel.includes(s.id)).length; return `<button class="chip ${i===st.cat?'on':''}" data-c="${i}">${esc(c.name)}${n?` <span class="cnt">${n}</span>`:''}</button>`}).join('');
+}
+// весь прайс одним списком, по разделам
+function catHtml(){
+  return D.categories.map((c,ci)=>{ const list = SV.filter(s=>s.cat===c.name);
+    return `<section class="cat-sec" data-c="${ci}">
+      <h3 class="cat-h">${esc(c.name)}<span class="n">${list.length}</span></h3>
+      ${list.map(s=>`
+      <div class="svc ${st.sel.includes(s.id)?'sel':''}" data-id="${s.id}">
+        <div class="body">
+          <div class="nm">${esc(s.name)}</div>
+          ${s.desc?`<div class="ds">${esc(s.desc)}</div>`:''}
+          <div class="row"><span class="pr">${s.from?'от ':''}${rub(s.price)}</span><span>${I.clock} ${durTxt(s.dur)}</span></div>
+        </div>
+        <button class="add" aria-label="Выбрать">${st.sel.includes(s.id)?I.check:I.plus}</button>
+      </div>`).join('')}
+    </section>`; }).join('');
+}
+function bindCat(){
+  document.querySelectorAll('.svc').forEach(el=>el.addEventListener('click',()=>{
+    const id = el.dataset.id; const i = st.sel.indexOf(id);
+    if (i>=0) st.sel.splice(i,1); else st.sel.push(id);
+    el.classList.toggle('sel'); el.querySelector('.add').innerHTML = st.sel.includes(id)?I.check:I.plus;
+    updateChipCounts();
+    document.querySelector('.bar .in').innerHTML = barHtml(); bindCta();
+  }));
+}
+function updateChipCounts(){
+  document.querySelectorAll('#chips .chip').forEach(ch=>{
+    const c = D.categories[+ch.dataset.c]; const n = SV.filter(s=>s.cat===c.name&&st.sel.includes(s.id)).length;
+    let b = ch.querySelector('.cnt');
+    if (n && !b){ b = document.createElement('span'); b.className='cnt'; ch.append(b); }
+    if (b){ if (n) b.textContent = n; else b.remove(); }
+  });
+}
+// подсветить кнопку раздела и подвинуть ленту кнопок, чтобы она была видна
+function setActiveChip(i){
+  if (i===st.cat) return; st.cat = i;
+  const chips = $('#chips'); if (!chips) return;
+  chips.querySelectorAll('.chip').forEach(ch=>ch.classList.toggle('on', +ch.dataset.c===i));
+  const on = chips.querySelector('.chip.on');
+  if (on) chips.scrollTo({left: on.offsetLeft - (chips.clientWidth - on.offsetWidth)/2, behavior:'smooth'});
+}
+// нажали на кнопку раздела: прокрутить список к нему и подсветить заголовок
+let spyLock = false;
+function goCat(i){
+  const sec = document.querySelector(`.cat-sec[data-c="${i}"]`), chips = $('#chips'); if (!sec) return;
+  setActiveChip(i); spyLock = true;
+  const top = sec.getBoundingClientRect().top + window.scrollY - chips.offsetHeight - 6;
+  window.scrollTo({top: Math.max(0, top), behavior:'smooth'});
+  const h = sec.querySelector('.cat-h'); h.classList.remove('flash'); void h.offsetWidth; h.classList.add('flash');
+}
+function bindChips(){
+  document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>goCat(+ch.dataset.c)));
+}
+// листают список сами — кнопка сверху переключается на раздел, который сейчас на экране
+function spyCat(){
+  const chips = $('#chips'); if (!chips) return;
+  chips.classList.toggle('stuck', chips.getBoundingClientRect().top<=0);
+  if (spyLock) return;
+  const line = chips.getBoundingClientRect().bottom + 40; let cur = 0;
+  document.querySelectorAll('.cat-sec').forEach(s=>{ if (s.getBoundingClientRect().top <= line) cur = +s.dataset.c; });
+  setActiveChip(cur);
+}
+let spyRaf = 0;
+window.addEventListener('scroll', ()=>{ if (!spyRaf) spyRaf = requestAnimationFrame(()=>{ spyRaf = 0; spyCat(); }); }, {passive:true});
+// пока список сам едет к разделу после нажатия, подсветку не трогаем; снова следим, как только человек сам коснулся экрана
+['touchstart','wheel','keydown'].forEach(ev=>window.addEventListener(ev, ()=>{ spyLock = false; }, {passive:true}));
+window.addEventListener('pointerdown', e=>{ if (!e.target.closest || !e.target.closest('#chips')) spyLock = false; }, {passive:true});
+// перетаскивание мышью для горизонтальных лент (на телефоне работает родной свайп)
+function dragScroll(el, opts={}){
+  if (!el || el._drag) return; el._drag = true;
+  let down=false, sx=0, sl=0, moved=false;
+  el.addEventListener('pointerdown', e=>{ if (e.pointerType!=='mouse' || e.button!==0) return; down=true; moved=false; sx=e.clientX; sl=el.scrollLeft; });
+  el.addEventListener('pointermove', e=>{ if (!down) return; const dx=e.clientX-sx; if (!moved && Math.abs(dx)>5){ moved=true; el.classList.add('dragging'); try{el.setPointerCapture(e.pointerId)}catch(_){} } if (moved) el.scrollLeft = sl-dx; });
+  const end = e=>{ if (!down) return; down=false; if (!moved) return;
+    const dx = e.clientX-sx;
+    if (opts.page){ const w=el.clientWidth, cur=Math.round(sl/w), max=Math.round((el.scrollWidth-w)/w); let to=cur; if (Math.abs(dx)>40) to = cur + (dx<0?1:-1); to=Math.max(0,Math.min(max,to)); el.scrollTo({left:to*w,behavior:'smooth'}); setTimeout(()=>el.classList.remove('dragging'),400); }
+    else el.classList.remove('dragging');
+  };
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+  el.addEventListener('click', e=>{ if (moved){ e.stopPropagation(); e.preventDefault(); moved=false; } }, true);
+  el.addEventListener('dragstart', e=>e.preventDefault());
+}
+// автолистание фото: пауза, пока человек трогает ленту или открыта запись
+let heroTimer = null;
+function startAutoplay(track){
+  clearInterval(heroTimer);
+  if (track.children.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let lastTouch = 0, hover = false;
+  const hero = track.parentElement, touched = () => { lastTouch = Date.now(); };
+  ['pointerdown','touchstart','touchmove','wheel'].forEach(ev => hero.addEventListener(ev, touched, {passive:true}));
+  hero.addEventListener('click', touched);
+  hero.addEventListener('pointerenter', e => { if (e.pointerType==='mouse') hover = true; });
+  hero.addEventListener('pointerleave', e => { if (e.pointerType==='mouse') hover = false; });
+  heroTimer = setInterval(() => {
+    if (!track.isConnected){ clearInterval(heroTimer); return; }
+    if (document.hidden || hover || Date.now()-lastTouch < 6000 || $('#sheet').classList.contains('on')) return;
+    const w = track.clientWidth, n = track.children.length, i = Math.round(track.scrollLeft/w);
+    if (i+1 < n){ track.scrollTo({left:(i+1)*w, behavior:'smooth'}); return; }
+    track.style.opacity = 0;   // с последнего фото на первое — через затухание, без перемотки
+    setTimeout(() => { track.scrollTo({left:0, behavior:'auto'}); track.style.opacity = 1; }, 220);
+  }, 3000);
+}
+function fmtPhone(v){ const d=v.replace(/\D/g,''); return d.length===11?`+7 (${d.slice(1,4)}) ${d.slice(4,7)}-${d.slice(7,9)}-${d.slice(9)}`:v; }
+function barHtml(){
+  if (!st.sel.length) return `<button class="cta center" id="ctaMain">Выбрать услугу и время</button>`;
+  const n = st.sel.length, dur = selDur();
+  return `<button class="cta" id="ctaMain"><span>${requestMode()?'Оставить заявку':'Выбрать время'}<br><span class="sub">${n} ${plural(n,'услуга','услуги','услуг')} · ${durTxt(dur)}</span></span><span>${rub(selTotal())}</span></button>`;
+}
+function plural(n,a,b,c){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return c;if(n1>1&&n1<5)return b;if(n1===1)return a;return c}
+function bindMain(){
+  bindCat(); bindChips();
+  const track = $('#track'), dots = [...document.querySelectorAll('#dots i')];
+  if (track){
+    track.addEventListener('scroll',()=>{const i=Math.round(track.scrollLeft/track.clientWidth); dots.forEach((d,j)=>d.classList.toggle('on',i===j));},{passive:true});
+    dragScroll(track, {page:true});
+    const go = d => { const w=track.clientWidth, n=track.children.length, i=Math.round(track.scrollLeft/w); track.scrollTo({left:((i+d+n)%n)*w, behavior:'smooth'}); };
+    const p=$('#prevPh'), nx=$('#nextPh'); if(p) p.onclick=()=>go(-1); if(nx) nx.onclick=()=>go(1);
+    dots.forEach(d=>d.onclick=()=>track.scrollTo({left:+d.dataset.i*track.clientWidth,behavior:'smooth'}));
+    startAutoplay(track);
+  }
+  dragScroll($('#chips')); spyCat();
+  bindCta(); setupInstall(); if (LIVE) bindMine();
+}
+function bindCta(){ $('#ctaMain').onclick = () => { if (!st.sel.length){ $('#svcTitle').scrollIntoView({behavior:'smooth'}); toast('Выберите одну или несколько услуг'); return; } st.step=1; st.time=null; st.idem=null; st.sendErr=''; if(!LIVE && !st.date) st.date = firstOpenDay(); openSheet(); if (LIVE) loadAvail(true); }; }
+function firstOpenDay(){ for(let i=0;i<14;i++){ const d=new Date(); d.setDate(d.getDate()+i); if(hoursOf(d) && (requestMode() || freeSlots(ymd(d), selDur()).length)) return ymd(d);} return ymd(new Date()); }
+
+// ---------- рабочая версия: обмен с сервером ----------
+async function api(path, opts={}){
+  const ctl = new AbortController(); const tm = setTimeout(()=>ctl.abort(), opts.timeout||15000);
+  try{
+    const r = await fetch(API+path, {method: opts.method||'GET', cache:'no-store', signal: ctl.signal,
+      headers: opts.body ? {'Content-Type':'application/json'} : {}, body: opts.body ? JSON.stringify(opts.body) : undefined});
+    let data = {}; try{ data = await r.json(); }catch(e){}
+    return {ok: r.ok, status: r.status, data: data || {}};
+  }catch(e){ return {ok:false, status:0, data:{error:'network'}}; }
+  finally{ clearTimeout(tm); }
+}
+const sheetOpen = () => $('#sheet').classList.contains('on');
+const pickCfg = c => JSON.stringify([c.categories, c.hours, c.boxes, c.phones, c.daysOff, c.confirm]);
+// свежие цены, услуги и часы работы: владелец мог поменять их в своём приложении
+async function refreshConfig(force){
+  const r = await api('/config'); if (!r.ok) return false;
+  const cfg = r.data;
+  if (!force && pickCfg(cfg) === pickCfg(D)) return true;
+  ['categories','hours','boxes','phones','confirm','daysOff','_version'].forEach(k=>{ if (k in cfg) D[k] = cfg[k]; });
+  buildSV(); st.sel = st.sel.filter(id=>SV.some(s=>s.id===id));
+  if (!sheetOpen() && location.hash!=='#owner') renderMain();
+  return true;
+}
+// свободное время приходит с сервера: он знает про все записи, блокировки и выходные
+const avail = {key:'', status:'idle', data:null, at:0};
+const selKey = () => st.sel.slice().sort().join(',');
+function dayInfo(k){ return avail.data && avail.data._key===selKey() ? avail.data.days.find(x=>x.date===k) : null; }
+const todayKey = () => LIVE && avail.data ? avail.data.now.slice(0,10) : ymd(new Date());
+// выбранный день должен быть днём со свободным временем; выбранное время — всё ещё свободным
+function ensureDate(){
+  if (!avail.data || avail.data._key!==selKey()) return;
+  const okDay = d => d.open && (avail.data.request || d.times.length);
+  if (!st.date || !avail.data.days.some(d=>d.date===st.date && okDay(d))){ const f = avail.data.days.find(okDay); st.date = f ? f.date : null; st.time = null; }
+  if (st.time && !freeSlots(st.date).some(x=>x.t===st.time.t)) st.time = null;
+}
+async function loadAvail(force){
+  const key = selKey(); if (!key) return;
+  if (!force && avail.key===key && avail.status==='ok' && Date.now()-avail.at < 60000){ ensureDate(); if (sheetOpen() && st.step===1) renderSheet(); return; }
+  avail.key = key; avail.status = 'loading'; ensureDate();
+  if (sheetOpen() && st.step===1) renderSheet();
+  const r = await api('/availability?days=14&services='+encodeURIComponent(key));
+  if (key !== selKey()) return;
+  if (r.ok){
+    avail.data = {...r.data, _key:key}; avail.status = 'ok'; avail.at = Date.now(); ensureDate();
+  } else {
+    avail.status = 'error'; avail.errMsg = r.status===423 ? r.data.message : '';
+    if (r.data.error==='service_changed'){ toast(r.data.message); await refreshConfig(true); closeSheet(); return; }
+  }
+  if (sheetOpen() && st.step===1) renderSheet();
+}
+function gridTimes(k){
+  if (!LIVE){ const d=new Date(k+'T00:00'); const hh=hoursOf(d); const all=[]; if(!hh) return all; for(let t=hh[0]; t+selDur()<=hh[1]; t+=STEP) all.push(t); return all; }
+  const x = dayInfo(k); if (!x || !x.hours) return [];
+  const o = toMin(x.hours[0]), c = toMin(x.hours[1]), dur = avail.data.dur, all = [];
+  const minT = k===todayKey() ? toMin(avail.data.now.slice(11,16)) + 30 : -1;
+  for (let t=o; t+dur<=c; t+=STEP) if (t >= minT) all.push(t);
+  return all;
+}
+function sheetDays(){
+  if (!LIVE) return [...Array(14)].map((_,i)=>{ const d=new Date(); d.setDate(d.getDate()+i); return {k:ymd(d), d, off:!hoursOf(d)}; });
+  return (avail.data ? avail.data.days : []).map(x=>({k:x.date, d:new Date(x.date+'T00:00'), off:!x.open, full: x.open && !avail.data.request && !x.times.length}));
+}
+// «Ваши записи» хранятся в телефоне клиента (номер записи + секретный код для отмены)
+const MYKEY = 'my_' + D.slug;
+const myLoad = () => { try{ return JSON.parse(localStorage.getItem(MYKEY)||'[]'); }catch(e){ return []; } };
+const mySave = a => { try{ localStorage.setItem(MYKEY, JSON.stringify(a.slice(-20))); }catch(e){} };
+const ENDED = ['cancelled','done','noshow'];
+function myUpcoming(){ const t = ymd(new Date()); return myLoad().filter(b => b.date >= t && !ENDED.includes(b.status)); }
+const myStatus = b => b.request && b.start==null ? 'Заявка · ждите звонка' : b.status==='new' ? 'Ждёт подтверждения' : 'Подтверждена';
+function mineHtml(){
+  const a = myUpcoming(); if (!a.length) return '';
+  return `<div class="section-title">Ваши записи</div>` + a.map(b=>`<div class="mine-card">
+    <div class="t">${dateHuman(b.date)}${b.start!=null?', '+hm(b.start):''}</div>
+    <div class="s">${b.services.map(s=>esc(s.name)).join(', ')} · ${rub(b.total)}</div>
+    <div class="stt ${b.status==='new'?'new':''}">${myStatus(b)}</div>
+    <div class="acts">${b.start!=null?`<button class="mini" data-ics="${b.id}">В календарь</button>`:''}<button class="mini danger" data-cancel="${b.id}">Отменить</button></div>
+  </div>`).join('');
+}
+function renderMine(){ const m = $('#mine'); if (m){ m.innerHTML = mineHtml(); bindMine(); } }
+function bindMine(){
+  document.querySelectorAll('[data-cancel]').forEach(b=>b.onclick=()=>cancelMine(+b.dataset.cancel));
+  document.querySelectorAll('[data-ics]').forEach(b=>b.onclick=()=>{ const x = myLoad().find(y=>y.id===+b.dataset.ics); if (x) addToCalendar(x); });
+}
+async function refreshMine(){
+  const list = myLoad(); const t = ymd(new Date()); let changed = false;
+  for (const b of list.filter(b=>b.date>=t && !ENDED.includes(b.status))){
+    const r = await api(`/bookings/${b.id}?token=${encodeURIComponent(b.token)}`);
+    if (r.ok){ if (r.data.status!==b.status || r.data.date!==b.date || r.data.start!==b.start){ Object.assign(b, {status:r.data.status, date:r.data.date, start:r.data.start, dur:r.data.dur}); changed = true; } }
+    else if (r.status===404){ b.status = 'cancelled'; changed = true; }
+  }
+  if (changed){ mySave(list); if (location.hash!=='#owner') renderMine(); }
+}
+async function cancelMine(id){
+  const b = myLoad().find(x=>x.id===id); if (!b) return;
+  if (!confirm('Отменить запись: ' + dateHuman(b.date) + (b.start!=null?', '+hm(b.start):'') + '?')) return;
+  const r = await api(`/bookings/${id}/cancel`, {method:'POST', body:{token:b.token}});
+  if (r.ok || r.status===404){ const list = myLoad(); const x = list.find(y=>y.id===id); if (x) x.status = 'cancelled'; mySave(list); renderMine(); toast('Запись отменена'); }
+  else toast(r.data.message || 'Не получилось отменить. Позвоните нам, пожалуйста.');
+}
+// файл для календаря телефона: событие с напоминанием за 2 часа
+function icsFor(b){
+  const pad = n=>String(n).padStart(2,'0'); const [y,m,d] = b.date.split('-').map(Number);
+  const s = new Date(Date.UTC(y, m-1, d, 0, b.start - 180)), e = new Date(s.getTime() + (b.dur||60)*60000);
+  const f = x => x.getUTCFullYear()+pad(x.getUTCMonth()+1)+pad(x.getUTCDate())+'T'+pad(x.getUTCHours())+pad(x.getUTCMinutes())+'00Z';
+  const q = v => String(v).replace(/[\\;,]/g, c=>'\\'+c).replace(/\n/g,'\\n');
+  const tel = D.phones[0] ? fmtPhone(D.phones[0].value) : '';
+  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//zapis//RU','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',
+    'UID:'+b.id+'-'+D.slug+'@zapis','DTSTAMP:'+f(new Date()),'DTSTART:'+f(s),'DTEND:'+f(e),
+    'SUMMARY:'+q(D.name+': '+b.services.map(x=>x.name).join(', ')),'LOCATION:'+q(D.address),
+    'DESCRIPTION:'+q('Телефон: '+tel+'\nОтменить запись можно на странице записи.'),
+    'BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:'+q('Запись: '+D.name),'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+}
+function addToCalendar(b){
+  const url = URL.createObjectURL(new Blob([icsFor(b)], {type:'text/calendar;charset=utf-8'}));
+  const a = document.createElement('a'); a.href = url; a.download = 'zapis-'+b.date+'.ics'; document.body.append(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 15000);
+}
+async function submitBooking(){
+  const rq = requestMode();
+  st.idem = st.idem || (Date.now().toString(36) + Math.random().toString(36).slice(2,12));
+  st.sending = true; st.sendErr = ''; renderSheet();
+  const body = {services: st.sel.slice(), date: st.date, start: rq ? null : st.time.t, name: st.form.name, phone: st.form.phone,
+                car: st.form.car, comment: st.form.comment, website: st.form.website, idem: st.idem};
+  const r = await api('/bookings', {method:'POST', body, timeout:20000});
+  st.sending = false;
+  if (r.ok){
+    const list = myLoad(); if (!list.some(x=>x.id===r.data.id)) list.push({...r.data, created:new Date().toISOString()}); mySave(list);
+    st.result = r.data; st.idem = null; st.step = 3; renderSheet(); return;
+  }
+  const e = r.data.error;
+  if (e==='slot_taken' || e==='day_closed'){ st.idem = null; st.time = null; st.step = 1; toast(r.data.message || 'Это время уже заняли'); renderSheet(); loadAvail(true); return; }
+  if (e==='service_changed'){ st.idem = null; toast(r.data.message); await refreshConfig(true); closeSheet(); return; }
+  st.sendErr = r.status===0 ? 'Нет связи с сервером. Проверьте интернет и нажмите ещё раз — запись не задвоится.' : (r.data.message || 'Не получилось записаться.');
+  renderSheet();
+}
+
+// ---------- sheet ----------
+function openSheet(){ renderSheet(); $('#sheet').classList.add('on'); $('#sheetBg').classList.add('on'); document.body.style.overflow='hidden'; }
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#sheetBg').classList.remove('on'); document.body.style.overflow=''; if(st.step===3){ st.sel=[]; st.date=null; st.time=null; st.result=null; renderMain(); } st.step=0; st.sendErr=''; st.idem=null; }
+$('#sheetBg').onclick = closeSheet;
+function renderSheet(){
+  const s = $('#sheet'); const rq = requestMode();
+  const titles = {1: rq?'Удобная дата':'Дата и время', 2:'Ваши данные', 3:''};
+  const res = LIVE && st.step===3 ? st.result : null;
+  const lines = res ? res.services : st.sel.map(id=>svc(id));
+  const when = res ? dateHuman(res.date)+(res.start!=null?', '+hm(res.start):'') : (st.date ? dateHuman(st.date)+(st.time!=null?', '+hm(st.time.t):'') : '');
+  const summary = `<div class="summary">${lines.map(v=>`<div class="l"><span>${esc(v.name)}</span><span>${v.from?'от ':''}${rub(v.price)}</span></div>`).join('')}
+     ${when && st.step>1?`<div class="l"><span>Когда</span><span>${when}</span></div>`:''}
+     <div class="l" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>Итого</span><b>${rub(res ? res.total : selTotal())}</b></div></div>`;
+  const tel = D.phones[0] ? D.phones[0].value : '';
+  const callBtn = tel ? `<a class="mini" href="tel:${esc(tel)}">Позвонить</a>` : '';
+  let body='', foot='';
+  if (st.step===1){
+    if (LIVE && !(avail.data && avail.data._key===selKey())){
+      body = summary + (avail.status==='error'
+        ? `<div class="send-err">${avail.errMsg ? esc(avail.errMsg)+'. Позвоните нам — запишем по телефону.' : 'Не удалось загрузить свободное время. Проверьте интернет.'}<div class="acts"><button class="mini" id="retryAvail">Повторить</button>${callBtn}</div></div>`
+        : `<div class="empty loading"><span class="spin"></span>Загружаем свободное время…</div>`);
+      foot = `<button class="cta center" id="next" disabled>Далее</button>`;
+    } else {
+      const tk = todayKey(), tm = (()=>{ const d=new Date(tk+'T12:00'); d.setDate(d.getDate()+1); return ymd(d); })();
+      body = summary + `<div class="label">День</div><div class="days">${sheetDays().map(x=>`<button class="day ${st.date===x.k?'on':''} ${x.off?'off':''} ${x.full?'full':''}" data-d="${x.k}" ${x.off?'disabled':''}><div class="w">${x.k===tk?'Сег':x.k===tm?'Завт':DOW_RU[x.d.getDay()]}</div><div class="d">${x.d.getDate()}</div></button>`).join('')}</div>`;
+      if (rq){
+        body += `<div class="label">Как это работает</div><div class="empty" style="text-align:left">Работа занимает больше одного дня. Оставьте заявку на удобную дату — администратор перезвонит, уточнит детали и подтвердит время.</div>`;
+        foot = `<button class="cta center" id="next" ${st.date?'':'disabled'}>Далее</button>`;
+      } else {
+        const fs = st.date ? freeSlots(st.date, selDur()) : [];
+        body += `<div class="label">Свободное время · ${durTxt(LIVE ? avail.data.dur : selDur())}</div>`;
+        if (!st.date) body += `<div class="empty">Свободных окон на ближайшие две недели нет. Позвоните нам — постараемся найти время.<div class="acts" style="display:flex;margin-top:10px">${callBtn}</div></div>`;
+        else if (!fs.length) body += `<div class="empty">На этот день свободных окон нет — выберите другой</div>`;
+        else {
+          const all = gridTimes(st.date), freeSet = new Set(fs.map(x=>x.t));
+          const groups=[['Утро',0,720],['День',720,1020],['Вечер',1020,1440]];
+          body += `<div class="times">${groups.map(([g,a,b])=>{const ts=all.filter(t=>t>=a&&t<b); if(!ts.length) return ''; return `<div class="period">${g}</div>`+ts.map(t=>`<button class="time ${st.time&&st.time.t===t?'on':''}" data-t="${t}" ${freeSet.has(t)?'':'disabled'}>${hm(t)}</button>`).join('')}).join('')}</div>`;
+        }
+        foot = `<button class="cta center" id="next" ${st.time?'':'disabled'}>Далее</button>`;
+      }
+    }
+  } else if (st.step===2){
+    const f=st.form;
+    const policy = LIVE ? ` (<a href="policy.html" target="_blank">подробнее</a>)` : '';
+    body = summary + (st.sendErr ? `<div class="send-err">${esc(st.sendErr)}${tel?`<br>Или позвоните: <a href="tel:${esc(tel)}">${fmtPhone(tel)}</a>`:''}</div>` : '') + `
+      <div class="field" id="f-name"><label>Имя</label><input id="iname" autocomplete="name" value="${esc(f.name)}" placeholder="Как к вам обращаться"><div class="err">Укажите имя</div></div>
+      <div class="field" id="f-phone"><label>Телефон</label><input id="iphone" type="tel" inputmode="tel" autocomplete="tel" value="${esc(f.phone)}"><div class="err">Проверьте номер</div></div>
+      <div class="field"><label>Автомобиль</label><input id="icar" value="${esc(f.car)}" placeholder="Марка, модель, цвет"></div>
+      <div class="field"><label>Комментарий</label><textarea id="icom" rows="2" placeholder="Необязательно">${esc(f.comment)}</textarea></div>
+      <input id="iweb" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" value="${esc(f.website||'')}">
+      <div class="agree">Нажимая кнопку, вы соглашаетесь на обработку персональных данных для записи${policy}.</div>`;
+    foot = `<button class="cta center" id="next" ${st.sending?'disabled':''}>${st.sending?'<span class="spin" style="margin-right:10px"></span>Отправляем…':(st.sendErr?'Попробовать ещё раз':(rq?'Отправить заявку':'Записаться'))}</button>`;
+  } else if (res){
+    const title = res.request && res.start==null ? 'Заявка отправлена' : res.status==='new' ? 'Запись отправлена' : 'Вы записаны';
+    const sub = res.request && res.start==null ? 'Администратор перезвонит, чтобы договориться о времени.'
+      : res.status==='new' ? 'Мойка подтвердит запись. Статус видно на этой странице, в разделе «Ваши записи».'
+      : 'Ждём вас! Если планы изменятся, отменить запись можно на этой странице, в разделе «Ваши записи».';
+    body = `<div class="done"><div class="ok">${I.check}</div><h3>${title}</h3><p>${when}<br>${esc(D.address)}</p>${summary}<p style="font-size:13px">${sub}</p></div>`;
+    foot = `${res.start!=null?`<button class="ghost" id="ics" style="margin:0 0 8px">Добавить в календарь</button>`:''}<button class="cta center" id="next">Готово</button>`;
+  } else {
+    body = `<div class="done"><div class="ok">${I.check}</div><h3>${rq?'Заявка отправлена':'Вы записаны'}</h3>
+      <p>${dateHuman(st.date)}${!rq&&st.time?', '+hm(st.time.t):''}<br>${esc(D.address)}</p>
+      ${summary}
+      <p style="font-size:13px">В рабочей версии владелец сразу получает уведомление в Telegram, а вам приходит напоминание.</p></div>`;
+    foot = `<button class="cta center" id="next">Готово</button><button class="ghost" id="seeOwner">Посмотреть, что видит владелец</button>`;
+  }
+  s.innerHTML = `<div class="sh-head">${st.step>1&&st.step<3?`<button class="icon-btn" id="back" aria-label="Назад">${I.back}</button>`:''}<h2>${titles[st.step]}</h2><button class="icon-btn" id="close" aria-label="Закрыть">${I.close}</button></div>
+    ${st.step<3?`<div class="steps"><i class="on"></i><i class="${st.step>=2?'on':''}"></i></div>`:''}
+    <div class="sh-body">${body}</div><div class="sh-foot">${foot}</div>`;
+  s.querySelectorAll('.days').forEach(d=>dragScroll(d));
+  const onDay = s.querySelector('.day.on'); if (onDay) onDay.scrollIntoView({inline:'center',block:'nearest'});
+  $('#close').onclick = closeSheet; const bk=$('#back'); if(bk) bk.onclick=()=>{ if (st.sending) return; st.step--; st.sendErr=''; renderSheet(); };
+  s.querySelectorAll('.day').forEach(b=>b.onclick=()=>{st.date=b.dataset.d; st.time=null; st.idem=null; renderSheet();});
+  s.querySelectorAll('.time').forEach(b=>b.onclick=()=>{const t=+b.dataset.t; st.time=LIVE?{t, box:null}:freeSlots(st.date,selDur()).find(x=>x.t===t); st.idem=null; renderSheet();});
+  const ra=$('#retryAvail'); if (ra) ra.onclick=()=>loadAvail(true);
+  const ic=$('#ics'); if (ic) ic.onclick=()=>addToCalendar(st.result);
+  const ip=$('#iphone'); if(ip){ ip.addEventListener('input',()=>{ip.value=maskPhone(ip.value);}); }
+  $('#next').onclick = () => {
+    if (st.step===1){ st.step=2; renderSheet(); return; }
+    if (st.step===2){
+      if (st.sending) return;
+      st.form={name:$('#iname').value.trim(),phone:$('#iphone').value,car:$('#icar').value.trim(),comment:$('#icom').value.trim(),website:$('#iweb').value};
+      const okN=st.form.name.length>=2, okP=st.form.phone.replace(/\D/g,'').length===11;
+      $('#f-name').classList.toggle('bad',!okN); $('#f-phone').classList.toggle('bad',!okP); if(!okN||!okP) return;
+      if (LIVE){ submitBooking(); return; }
+      const rq=requestMode(); const all=load();
+      all.push({id:Date.now(),date:st.date,start:rq?null:st.time.t,dur:rq?null:selDur(),box:rq?null:st.time.box,request:rq,services:st.sel.map(id=>svc(id).name),total:selTotal(),...st.form,created:new Date().toISOString()});
+      save(all); st.step=3; renderSheet(); return;
+    }
+    closeSheet();
+  };
+  const so=$('#seeOwner'); if(so) so.onclick=()=>{closeSheet(); location.hash='owner';};
+}
+function maskPhone(v){ let d=v.replace(/\D/g,''); if(d.startsWith('8')) d='7'+d.slice(1); if(!d.startsWith('7')) d='7'+d; d=d.slice(0,11); let r='+7'; if(d.length>1) r+=' ('+d.slice(1,4); if(d.length>=4) r+=') '+d.slice(4,7); if(d.length>=7) r+='-'+d.slice(7,9); if(d.length>=9) r+='-'+d.slice(9,11); return r; }
+function dateHuman(k){ const d=new Date(k+'T00:00'); const t=ymd(new Date()); const tm=new Date(); tm.setDate(tm.getDate()+1); const pre = k===t?'Сегодня, ':k===ymd(tm)?'Завтра, ':''; return pre + d.getDate()+' '+MON_RU[d.getMonth()]+(pre?'':', '+DOW_RU[d.getDay()].toLowerCase()); }
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2200); }
+
+// install prompt
+let deferred=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault(); deferred=e;});
+window.addEventListener('appinstalled',()=>{deferred=null; const b=$('#install'); if(b) b.remove(); toast('Приложение добавлено на экран');});
+function setupInstall(){
+  const box=$('#install'); if(!box) return;
+  if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone){ box.remove(); return; }
+  box.onclick=async()=>{
+    if (deferred){ const p=deferred; deferred=null; p.prompt(); const r=await p.userChoice.catch(()=>null); if(r&&r.outcome==='accepted') return; return; }
+    openInstallHelp();
+  };
+}
+// браузер не всегда разрешает установку по кнопке (iPhone — никогда), поэтому показываем шаги под устройство
+function openInstallHelp(){
+  const ua=navigator.userAgent;
+  const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const android=/android/i.test(ua);
+  const inApp=!!window.TelegramWebview||!!window.TelegramWebviewProxy||/Telegram|VKAndroid|VKClient|com\.vk|Instagram|FBAN|FBAV|; wv\)/i.test(ua);
+  const ya=/YaBrowser|YaApp/i.test(ua);
+  let steps;
+  if (ios) steps=['Нажмите кнопку <b>«Поделиться»</b> (квадрат со стрелкой вверх) на панели браузера','Пролистайте список вниз и выберите <b>«На экран Домой»</b>','Нажмите <b>«Добавить»</b> в правом верхнем углу'];
+  else if (android) steps=[ya?'Нажмите <b>меню</b> браузера (три полоски или три точки)':'Нажмите <b>три точки</b> в правом верхнем углу браузера','Выберите <b>«Добавить на главный экран»</b> или <b>«Установить приложение»</b>','Подтвердите, нажав <b>«Добавить»</b> или <b>«Установить»</b>'];
+  else steps=['Нажмите <b>три точки</b> в правом верхнем углу браузера','Выберите <b>«Трансляция, сохранение и отправка»</b>, затем <b>«Установить страницу как приложение»</b>','Подтвердите установку'];
+  const warn=inApp?`<div class="howto-warn">Страница открыта внутри другого приложения, отсюда добавить нельзя. Сначала откройте меню (три точки) и выберите <b>«Открыть в браузере»</b>, а затем выполните шаги ниже.</div>`:'';
+  $('#sheet').innerHTML=`<div class="sh-head"><h2>Как добавить на экран</h2><button class="icon-btn" id="close" aria-label="Закрыть">${I.close}</button></div>
+    <div class="sh-body">${warn}<ol class="howto">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
+    <div class="sh-foot"><button class="cta center" id="gotIt">Понятно</button></div>`;
+  $('#close').onclick=closeSheet; $('#gotIt').onclick=closeSheet;
+  $('#sheet').classList.add('on'); $('#sheetBg').classList.add('on'); document.body.style.overflow='hidden';
+}
+
+// ---------- owner ----------
+let ownerTab='day', ownerDate=null;
+function renderOwner(){
+  ownerDate = ownerDate || ymd(new Date());
+  const mine = load(); const today = ymd(new Date());
+  const real = mine.filter(b=>!b.request); const reqs = mine.filter(b=>b.request);
+  const dayB = busy(ownerDate); const hh = hoursOf(new Date(ownerDate+'T00:00'));
+  const loadPct = hh ? Math.round(dayB.reduce((a,b)=>a+b.dur,0) / ((hh[1]-hh[0])*D.boxes) * 100) : 0;
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(); d.setDate(d.getDate()+i); return d;});
+  let tl='';
+  if (hh){
+    const rows=[]; for(let t=hh[0]; t<hh[1]; t+=60) rows.push(t);
+    tl = `<div class="tl"><div class="tl-grid">${rows.map(t=>`<div class="tl-row"><div class="tl-h">${hm(t)}</div><div class="tl-boxes" style="grid-template-columns:repeat(${D.boxes},1fr)">${[...Array(D.boxes)].map((_,b)=>{const x=dayB.find(y=>y.box===b && y.start<t+60 && t<y.start+y.dur); if(!x) return `<div class="slot">свободно</div>`; const isStart = x.start>=t && x.start<t+60; return `<div class="slot ${x.seed?'busy':'mine'}">${isStart?(x.seed?'Клиент · '+hm(x.start):'✦ '+esc(x.name)+' · '+hm(x.start)):''}</div>`}).join('')}</div></div>`).join('')}</div></div>`;
+  } else tl = `<div class="empty">Выходной</div>`;
+  $('#app').innerHTML = `
+  <div class="demo-bar">Кабинет владельца · <b>демо</b> · в рабочей версии вход по паролю</div>
+  <div class="sh-head" style="padding:14px 16px 0"><a class="icon-btn" href="#" aria-label="Назад">${I.back}</a><h2>${esc(D.name)} · кабинет</h2></div>
+  <div class="owner">
+    <div class="tabs"><button class="tab ${ownerTab==='day'?'on':''}" data-t="day">Расписание</button><button class="tab ${ownerTab==='list'?'on':''}" data-t="list">Записи${mine.length?' · '+mine.length:''}</button><button class="tab ${ownerTab==='price'?'on':''}" data-t="price">Цены</button></div>
+    ${ownerTab==='day'?`
+      <div class="days" style="margin-bottom:12px">${days.map((d,i)=>{const k=ymd(d);return `<button class="day ${ownerDate===k?'on':''}" data-d="${k}"><div class="w">${i===0?'Сег':DOW_RU[d.getDay()]}</div><div class="d">${d.getDate()}</div></button>`}).join('')}</div>
+      <div class="kpis"><div class="kpi"><div class="v">${dayB.length}</div><div class="k">записей</div></div><div class="kpi"><div class="v">${loadPct}%</div><div class="k">загрузка</div></div><div class="kpi"><div class="v">${D.boxes}</div><div class="k">${plural(D.boxes,'бокс','бокса','боксов')}</div></div></div>
+      ${tl}
+      <div class="owner-note">Синие ячейки — примерная загрузка для демонстрации. Яркие — записи, которые вы сделали сами в этом демо.</div>`:''}
+    ${ownerTab==='list'?`
+      ${mine.length?mine.slice().reverse().map(b=>`<div class="bk"><div class="t">${b.request?'Заявка · ':''}${dateHuman(b.date)}${b.start!=null?', '+hm(b.start):''}</div><div class="s">${esc(b.name)} · ${esc(b.phone)}${b.car?' · '+esc(b.car):''}</div><div class="s">${b.services.map(esc).join(', ')} · ${rub(b.total)}</div>${b.comment?`<div class="s">«${esc(b.comment)}»</div>`:''}</div>`).join(''):`<div class="empty">Пока пусто. Запишитесь на главной странице — запись появится здесь.</div>`}
+      <div class="owner-note">В рабочей версии каждая запись дублируется вам в Telegram сразу после оформления.</div>`:''}
+    ${ownerTab==='price'?`
+      ${SV.map(s=>`<div class="pedit"><div class="n">${esc(s.name)}</div><input inputmode="numeric" data-id="${s.id}" value="${s.price}"></div>`).join('')}
+      <div class="owner-note">Цены меняются сразу на странице записи. Без звонков разработчику.</div>`:''}
+  </div>`;
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ownerTab=b.dataset.t; renderOwner();});
+  document.querySelectorAll('.owner .day').forEach(b=>b.onclick=()=>{ownerDate=b.dataset.d; renderOwner();});
+  document.querySelectorAll('.owner .days').forEach(d=>dragScroll(d));
+  document.querySelectorAll('.pedit input').forEach(inp=>inp.onchange=()=>{const v=parseInt(inp.value.replace(/\D/g,''))||0; overrides[inp.dataset.id]=v; try{localStorage.setItem(PKEY,JSON.stringify(overrides))}catch(e){} svc(inp.dataset.id).price=v; toast('Цена сохранена');});
+  window.scrollTo(0,0);
+}
+
+function route(){ if(location.hash==='#owner'){ if (LIVE){ location.replace('owner/'); return; } renderOwner(); } else renderMain(); }
+window.addEventListener('hashchange',route);
+route();
+if (LIVE){
+  refreshConfig(); refreshMine();
+  document.addEventListener('visibilitychange', ()=>{ if (!document.hidden){ refreshMine(); refreshConfig(); } });
+}
+// служебный режим для скриншотов демо: ?shot=1|2|3|req|owner
+(()=>{ if (LIVE) return; const m=location.search.match(/shot=(\w+)/); if(!m) return; const k=m[1];
+  if(k==='cat'){ st.sel=[SV[1].id]; renderMain(); setTimeout(()=>goCat(2), 300); return; }
+  if(k==='list'){ st.sel=[SV[1].id]; renderMain(); setTimeout(()=>window.scrollTo(0, $('#chips').getBoundingClientRect().top+window.scrollY-200), 300); return; }
+  if(k==='install'){ $('#install').click(); return; }
+  if(k==='owner'){ save([{id:1,date:ymd(new Date()),start:hoursOf(new Date())?hoursOf(new Date())[0]+120:600,dur:90,box:1,request:false,services:['Мойка с кварцевым покрытием'],total:3000,name:'Алексей',phone:'+7 (921) 000-00-00',car:'Kia Rio, белый',comment:''}]); location.hash='owner'; return; }
+  st.sel = k==='req' ? [SV[SV.length-1].id] : [SV[1].id, SV[9].id]; renderMain(); st.date=firstOpenDay(); st.step=k==='req'?1:+k||1;
+  if(st.step>=2&&!requestMode()){ st.time=freeSlots(st.date,selDur())[0]; }
+  if(k==='3'){ st.form={name:'Алексей',phone:'+7 (921) 000-00-00',car:'Kia Rio',comment:''}; }
+  openSheet(); if(k==='3'){ st.step=2; renderSheet(); $('#next').click(); }
+})();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
