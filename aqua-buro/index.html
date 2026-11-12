@@ -708,7 +708,7 @@ function renderSheet(){
     body = `<div class="done"><div class="ok">${I.check}</div><h3>${rq?'Заявка отправлена':'Вы записаны'}</h3>
       <p>${dateHuman(st.date)}${!rq&&st.time?', '+hm(st.time.t):''}<br>${esc(D.address)}</p>
       ${summary}
-      <p style="font-size:13px">В рабочей версии владелец сразу получает уведомление в Telegram, а вам приходит напоминание.</p></div>`;
+      <p style="font-size:13px">В рабочей версии владелец сразу видит запись в кабинете и получает уведомление в Telegram, а клиент может одной кнопкой добавить запись в календарь телефона с напоминанием за 2 часа.</p></div>`;
     foot = `<button class="cta center" id="next">Готово</button><button class="ghost" id="seeOwner">Посмотреть, что видит владелец</button>`;
   }
   s.innerHTML = `<div class="sh-head">${st.step>1&&st.step<3?`<button class="icon-btn" id="back" aria-label="Назад">${I.back}</button>`:''}<h2>${titles[st.step]}</h2><button class="icon-btn" id="close" aria-label="Закрыть">${I.close}</button></div>
